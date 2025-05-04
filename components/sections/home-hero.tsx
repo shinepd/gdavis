@@ -34,22 +34,13 @@ export function HomeHero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="flex flex-col sm:flex-row gap-4"
           >
-            <Button
-              size="lg"
-              className="bg-white text-primary hover:bg-white/90"
-              asChild
-            >
+            <Button size="lg" variant="white" asChild>
               <Link href="/products">
                 Browse Products
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-white text-white hover:bg-white/20"
-              asChild
-            >
+            <Button variant="whiteOutline" size="lg" asChild>
               <Link href="/contact">Contact Us</Link>
             </Button>
           </motion.div>

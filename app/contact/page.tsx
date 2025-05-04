@@ -169,7 +169,7 @@ export default function ContactPage() {
                       />
                     </div>
 
-                    <Button type="submit" className="w-full md:w-auto">
+                    <Button type="submit" variant="default">
                       Submit Message
                     </Button>
                   </motion.div>

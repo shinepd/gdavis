@@ -17,31 +17,37 @@ import { SectionHeading } from '@/components/ui/section-heading';
 export function HomeProducts() {
   const products = [
     {
+      id: 'windows-doors',
       title: 'Windows & Doors',
       description:
         'High-performance fenestration systems for residential and commercial projects.',
     },
     {
+      id: 'wall-systems',
       title: 'Wall Systems',
       description:
         'Innovative wall systems that provide aesthetics, durability, and energy efficiency.',
     },
     {
+      id: 'interior-finishes',
       title: 'Interior Finishes',
       description:
         'Premium interior materials for walls, floors, and ceilings.',
     },
     {
+      id: 'exterior-cladding',
       title: 'Exterior Cladding',
       description:
         'Durable and attractive exterior cladding solutions for any project.',
     },
     {
+      id: 'specialty-products',
       title: 'Specialty Products',
       description:
         'Unique architectural products for special applications and design requirements.',
     },
     {
+      id: 'hardware-accessories',
       title: 'Hardware & Accessories',
       description:
         'Quality hardware and accessories to complement architectural products.',
@@ -76,8 +82,8 @@ export function HomeProducts() {
                   <p>{product.description}</p>
                 </CardContent>
                 <CardFooter>
-                  <Button variant="outline" asChild className="w-full">
-                    <Link href="/products">Learn More</Link>
+                  <Button variant="outline" asChild>
+                    <Link href={`/products#${product.id}`}>Learn More</Link>
                   </Button>
                 </CardFooter>
               </Card>

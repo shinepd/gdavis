@@ -5,9 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // You'll need to add actual image URLs here
 const heroImages = [
-  '/images/hero-1.jpg',
-  '/images/hero-2.jpg',
-  '/images/hero-3.jpg',
+  '/images/kansas-city-international-airport-new-terminal-skidmore-owings-and-merrill_1.jpg',
+  '/images/kansas-city-international-airport-new-terminal-skidmore-owings-and-merrill_2.jpg',
+  '/images/kansas-city-international-airport-new-terminal-skidmore-owings-and-merrill_3.jpg',
 ];
 
 interface HeroSlideshowProps {

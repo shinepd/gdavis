@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { CtaSection } from '@/components/sections/cta-section';
 
-export function HomeCta() {
+export function CtaContent() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

@@ -72,9 +72,7 @@ export function Footer() {
               Subscribe to our newsletter for product updates and industry news.
             </p>
             <div className="flex items-center space-x-2">
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-                Subscribe
-              </Button>
+              <Button variant="default">Subscribe</Button>
             </div>
           </div>
         </div>

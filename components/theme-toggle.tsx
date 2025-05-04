@@ -26,8 +26,9 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button variant="outline" size="icon" className="rounded-full">
-        <Sun className="h-[1.2rem] w-[1.2rem] opacity-50" />
+      <Button variant="outline" size="icon">
+        <Sun className="h-4 w-4 transition-all scale-100 dark:scale-0" />
+        <Moon className="absolute h-4 w-4 transition-all scale-0 dark:scale-100" />
         <span className="sr-only">Toggle theme</span>
       </Button>
     );

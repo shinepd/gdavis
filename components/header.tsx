@@ -55,7 +55,7 @@ export function Header() {
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild className="md:hidden">
-              <Button variant="outline" size="icon" className="rounded-full">
+              <Button variant="outline" size="icon">
                 <MenuIcon className="h-5 w-5" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
