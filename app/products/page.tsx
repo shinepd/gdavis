@@ -20,6 +20,10 @@ export default async function ProductsPage() {
   const categories = await getAllProductCategories();
   const manufacturers = await getAllManufacturers();
 
+  // Debug logging
+  console.log('Categories found:', categories.length);
+  console.log('Categories data:', categories);
+
   return (
     <div className="flex flex-col w-full">
       {/* Hero Section */}
@@ -51,91 +55,100 @@ export default async function ProductsPage() {
           </div>
 
           <div className="space-y-20">
-            {categories.map((category, categoryIndex) => (
-              <div
-                key={category._id}
-                id={category.slug.current}
-                className="space-y-8"
-              >
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-bold group flex items-center">
-                    <Link
-                      href={`/products/${category.slug.current}`}
-                      className="hover:text-primary transition-colors flex items-center"
-                    >
-                      {category.title}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="ml-2 h-4 w-4"
-                      >
-                        <polyline points="9 18 15 12 9 6" />
-                      </svg>
-                    </Link>
-                  </h3>
-                  <p className="text-muted-foreground">
-                    {category.description}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {category.products.map((product) => (
-                    <Card key={product._id} className="h-full">
-                      <CardHeader>
-                        {product.image ? (
-                          <div className="h-48 relative rounded-md mb-4 overflow-hidden">
-                            <Image
-                              src={urlFor(product.image)
-                                .width(400)
-                                .height(300)
-                                .url()}
-                              alt={product.name}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div className="h-32 bg-muted rounded-md flex items-center justify-center mb-4">
-                            <span className="text-muted-foreground">
-                              Product Image
-                            </span>
-                          </div>
-                        )}
-                        <CardTitle className="text-lg">
-                          {product.name}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm text-muted-foreground">
-                          {product.description}
-                        </p>
-                        {product.manufacturer && (
-                          <p className="text-xs text-muted-foreground mt-2">
-                            By {product.manufacturer.name}
-                          </p>
-                        )}
-                      </CardContent>
-                      <CardFooter>
-                        <Button variant="outline" size="sm">
-                          Request Info
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  ))}
-                </div>
-
-                {categoryIndex < categories.length - 1 && (
-                  <Separator className="my-8" />
-                )}
+            {categories.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">
+                  No product categories found. Please add categories in Sanity
+                  Studio.
+                </p>
               </div>
-            ))}
+            ) : (
+              categories.map((category, categoryIndex) => (
+                <div
+                  key={category._id}
+                  id={category.slug.current}
+                  className="space-y-8"
+                >
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-bold group flex items-center">
+                      <Link
+                        href={`/products/${category.slug.current}`}
+                        className="hover:text-primary transition-colors flex items-center"
+                      >
+                        {category.title}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="ml-2 h-4 w-4"
+                        >
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </Link>
+                    </h3>
+                    <p className="text-muted-foreground">
+                      {category.description}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {category.products.map((product) => (
+                      <Card key={product._id} className="h-full">
+                        <CardHeader>
+                          {product.image ? (
+                            <div className="h-48 relative rounded-md mb-4 overflow-hidden">
+                              <Image
+                                src={urlFor(product.image)
+                                  .width(400)
+                                  .height(300)
+                                  .url()}
+                                alt={product.name}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <div className="h-32 bg-muted rounded-md flex items-center justify-center mb-4">
+                              <span className="text-muted-foreground">
+                                Product Image
+                              </span>
+                            </div>
+                          )}
+                          <CardTitle className="text-lg">
+                            {product.name}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-muted-foreground">
+                            {product.description}
+                          </p>
+                          {product.manufacturer && (
+                            <p className="text-xs text-muted-foreground mt-2">
+                              By {product.manufacturer.name}
+                            </p>
+                          )}
+                        </CardContent>
+                        <CardFooter>
+                          <Button variant="outline" size="sm">
+                            Request Info
+                          </Button>
+                        </CardFooter>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {categoryIndex < categories.length - 1 && (
+                    <Separator className="my-8" />
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -160,20 +173,22 @@ export default async function ProductsPage() {
                 className="flex flex-col items-center justify-center p-4 bg-background rounded-md shadow-sm hover:shadow-md transition-shadow"
               >
                 {manufacturer.logo ? (
-                  <div className="h-24 w-full relative mb-4">
+                  <div className="h-20 w-full relative mb-4 flex items-center justify-center">
                     <Image
                       src={urlFor(manufacturer.logo)
-                        .width(200)
-                        .height(100)
+                        .width(300)
+                        .height(120)
+                        .fit('max')
                         .url()}
                       alt={manufacturer.name}
-                      fill
-                      className="object-contain"
+                      width={300}
+                      height={120}
+                      className="object-contain max-h-full max-w-full"
                     />
                   </div>
                 ) : (
-                  <div className="h-24 w-full flex items-center justify-center mb-4">
-                    <span className="text-xl font-medium">
+                  <div className="h-20 w-full flex items-center justify-center mb-4">
+                    <span className="text-lg font-medium text-center">
                       {manufacturer.name}
                     </span>
                   </div>

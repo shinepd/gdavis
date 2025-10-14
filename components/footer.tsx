@@ -15,13 +15,13 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">G. Davis & Associates</h3>
             <p className="text-sm text-muted-foreground">
-              Manufacturer&apos;s representative firm providing high-quality
-              architectural products and exceptional service.
+              Finding the perfect architectural element shouldn&apos;t be the
+              hardest part of your design.
             </p>
             <div className="flex flex-col space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
-                <span>123 Design Avenue, Suite 100</span>
+                <span>12004 Pawnee Lane, Leawood, KS 66209</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
@@ -83,20 +83,6 @@ export function Footer() {
           <p className="text-sm text-muted-foreground">
             © {currentYear} G. Davis & Associates. All rights reserved.
           </p>
-          <div className="flex space-x-4 mt-4 md:mt-0">
-            <Link
-              href="/privacy"
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="/terms"
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
-            >
-              Terms of Service
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

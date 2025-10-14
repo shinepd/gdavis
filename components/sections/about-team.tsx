@@ -6,12 +6,9 @@ import { MotionGroup, MotionItem } from '@/components/motion-wrapper';
 
 export function AboutTeam() {
   const teamMembers = [
-    { name: 'George Davis', title: 'President & Founder' },
-    { name: 'Sarah Johnson', title: 'Sales Director' },
-    { name: 'Michael Chen', title: 'Technical Specialist' },
-    { name: 'Jennifer Williams', title: 'Project Coordinator' },
-    { name: 'David Miller', title: 'Product Specialist' },
-    { name: 'Amanda Garcia', title: 'Customer Service' },
+    { name: 'George Davis', title: 'Founder' },
+    { name: 'Maddie Shine', title: 'Sales' },
+    { name: 'Makensi McDonald', title: 'Marketing' },
   ];
 
   return (

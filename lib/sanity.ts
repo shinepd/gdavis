@@ -73,6 +73,8 @@ export interface Manufacturer {
   logo?: SanityImage;
   description?: string;
   website?: string;
+  category?: string;
+  current?: boolean;
 }
 
 export interface BlockContent {
@@ -87,7 +89,7 @@ export interface Project {
     current: string;
   };
   architects: Architect[];
-  products: Product[];
+  manufacturers: Manufacturer[];
   coverImage: SanityImage;
   projectImages?: SanityImage[];
   description: BlockContent[];
@@ -110,12 +112,13 @@ export async function getAllProjects(): Promise<Project[]> {
         bio,
         image
       },
-      products[]->{
+      manufacturers[]->{
         _id,
         name,
         slug,
+        logo,
         description,
-        image,
+        website,
         category
       },
       coverImage,
@@ -143,12 +146,13 @@ export async function getProjectBySlug(slug: string): Promise<Project> {
         bio,
         image
       },
-      products[]->{
+      manufacturers[]->{
         _id,
         name,
         slug,
+        logo,
         description,
-        image,
+        website,
         category
       },
       coverImage,
@@ -202,13 +206,14 @@ export async function getAllProductCategories(): Promise<ProductCategory[]> {
 // Function to fetch all manufacturers
 export async function getAllManufacturers(): Promise<Manufacturer[]> {
   return client.fetch(`
-    *[_type == "manufacturer"] | order(name asc) {
+    *[_type == "manufacturer" && current == true] | order(name asc) {
       _id,
       name,
       slug,
       logo,
       description,
-      website
+      website,
+      current
     }
   `);
 }

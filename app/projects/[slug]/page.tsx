@@ -96,9 +96,9 @@ export default async function ProjectPage({
                   {project.title}
                 </h1>
                 <div className="flex flex-wrap gap-2 mt-4 mb-6">
-                  {project.products.map((product) => (
-                    <Badge key={product._id} variant="outline">
-                      {product.name}
+                  {project.manufacturers?.map((manufacturer) => (
+                    <Badge key={manufacturer._id} variant="outline">
+                      {manufacturer.name}
                     </Badge>
                   ))}
                 </div>
@@ -197,38 +197,43 @@ export default async function ProjectPage({
         </section>
       )}
 
-      {/* Products Used */}
+      {/* Manufacturers Used */}
       <section className="w-full py-12 md:py-16">
         <div className="container mx-auto px-4">
           <h2 className="font-heading uppercase tracking-wide text-2xl md:text-3xl mb-8 text-center">
-            Products Used in This Project
+            Manufacturers Used in This Project
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {project.products.map((product) => (
+            {project.manufacturers?.map((manufacturer) => (
               <div
-                key={product._id}
+                key={manufacturer._id}
                 className="border rounded-lg p-4 hover:shadow-md transition-shadow"
               >
-                {product.image && (
+                {manufacturer.logo && (
                   <div className="aspect-square relative w-full mb-4 rounded overflow-hidden">
                     <Image
-                      src={urlFor(product.image).width(300).height(300).url()}
-                      alt={product.name}
+                      src={urlFor(manufacturer.logo)
+                        .width(300)
+                        .height(300)
+                        .url()}
+                      alt={manufacturer.name}
                       width={300}
                       height={300}
                       className="object-cover w-full h-full"
                     />
                   </div>
                 )}
-                <h3 className="font-medium text-lg mb-1">{product.name}</h3>
-                {product.category && (
+                <h3 className="font-medium text-lg mb-1">
+                  {manufacturer.name}
+                </h3>
+                {manufacturer.category && (
                   <Badge variant="secondary" className="mb-2">
-                    {product.category}
+                    {manufacturer.category}
                   </Badge>
                 )}
-                {product.description && (
+                {manufacturer.description && (
                   <p className="text-muted-foreground text-sm mt-2">
-                    {product.description}
+                    {manufacturer.description}
                   </p>
                 )}
               </div>
