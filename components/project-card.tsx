@@ -46,15 +46,15 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </p>
         )}
 
-        {/* Display product categories */}
+        {/* Display manufacturers */}
         <div className="flex flex-wrap gap-2 mt-3">
-          {project.products &&
-            project.products.map((product) => (
+          {project.manufacturers &&
+            project.manufacturers.map((manufacturer) => (
               <span
-                key={product._id}
+                key={manufacturer._id}
                 className="text-xs px-2 py-1 rounded-full bg-secondary/50 text-secondary-foreground"
               >
-                {product.category || product.name}
+                {manufacturer.name}
               </span>
             ))}
         </div>
