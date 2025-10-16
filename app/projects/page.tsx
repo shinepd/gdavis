@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { getAllProjects } from '@/lib/sanity';
-import { ProjectCard } from '@/components/project-card';
+import { getPaginatedProjects } from '@/lib/sanity';
+import { InfiniteProjectsList } from '@/components/infinite-projects-list';
 import { CtaSection } from '@/components/sections/cta-section';
 
 export const metadata: Metadata = {
@@ -14,7 +14,8 @@ export const metadata: Metadata = {
 
 // This function is called at build time to generate the static page
 export default async function ProjectsPage() {
-  const projects = await getAllProjects();
+  // Fetch initial batch of projects (page 0, 9 items)
+  const { projects, hasMore, total } = await getPaginatedProjects(0, 9);
 
   return (
     <div className="flex flex-col w-full">
@@ -51,19 +52,11 @@ export default async function ProjectsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project) => (
-              <ProjectCard key={project._id} project={project} />
-            ))}
-          </div>
-
-          {projects.length > 9 && (
-            <div className="mt-12 text-center">
-              <Button variant="outline" size="lg">
-                Load More Projects
-              </Button>
-            </div>
-          )}
+          <InfiniteProjectsList
+            initialProjects={projects}
+            initialHasMore={hasMore}
+            initialTotal={total}
+          />
         </div>
       </section>
 

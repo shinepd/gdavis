@@ -17,40 +17,40 @@ import { SectionHeading } from '@/components/ui/section-heading';
 export function HomeProducts() {
   const products = [
     {
-      id: 'windows-doors',
-      title: 'Windows & Doors',
+      id: 'ceilings',
+      title: 'Ceilings',
       description:
-        'High-performance fenestration systems for residential and commercial projects.',
+        'Comprehensive ceiling systems including acoustical, metal, and wood solutions for optimal sound control, durability, and aesthetic appeal.',
     },
     {
-      id: 'wall-systems',
-      title: 'Wall Systems',
+      id: 'architectural-glass',
+      title: 'Architectural Glass',
       description:
-        'Innovative wall systems that provide aesthetics, durability, and energy efficiency.',
+        'Sleek, versatile glass systems for light, visibility, and dynamic space division with modern appeal.',
     },
     {
-      id: 'interior-finishes',
-      title: 'Interior Finishes',
+      id: 'rainscreens-and-cladding',
+      title: 'Rainscreens & Cladding',
       description:
-        'Premium interior materials for walls, floors, and ceilings.',
+        'Complete facade solutions in metal, wood, terracotta, zinc, and concrete offering superior weather protection and stunning exteriors.',
     },
     {
-      id: 'exterior-cladding',
-      title: 'Exterior Cladding',
+      id: 'natural-materials',
+      title: 'Natural Materials',
       description:
-        'Durable and attractive exterior cladding solutions for any project.',
+        'Sustainable systems featuring terracotta, wood panels, and composite stone for warm, biophilic design with lasting performance.',
     },
     {
-      id: 'specialty-products',
-      title: 'Specialty Products',
+      id: 'metal-systems',
+      title: 'Metal Systems',
       description:
-        'Unique architectural products for special applications and design requirements.',
+        'Modern metal solutions including cladding, rainscreens, and zinc facades for high-tech durability and distinctive architectural character.',
     },
     {
-      id: 'hardware-accessories',
-      title: 'Hardware & Accessories',
+      id: 'specialty-materials',
+      title: 'Specialty Materials',
       description:
-        'Quality hardware and accessories to complement architectural products.',
+        'Innovative products like concrete rainscreens and composite stone offering unique aesthetics with superior strength and low maintenance.',
     },
   ];
 

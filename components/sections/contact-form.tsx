@@ -183,7 +183,7 @@ export function ContactForm() {
                     <div>
                       <p className="text-sm font-medium">George Davis</p>
                       <p className="text-sm text-muted-foreground">
-                        (913) 123-4567
+                        (913) 231-8071
                       </p>
                     </div>
                   </div>
@@ -213,7 +213,7 @@ export function ContactForm() {
                     <div>
                       <p className="text-sm font-medium">Maddie Shine</p>
                       <p className="text-sm text-muted-foreground">
-                        (913) 987-6543
+                        (913) 744-0191
                       </p>
                     </div>
                   </div>

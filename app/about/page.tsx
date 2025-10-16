@@ -3,7 +3,6 @@ import { AboutHero } from '@/components/sections/about-hero';
 import { AboutHistory } from '@/components/sections/about-history';
 import { AboutValues } from '@/components/sections/about-values';
 import { AboutTeam } from '@/components/sections/about-team';
-import { AboutTestimonials } from '@/components/sections/about-testimonials';
 import { AboutContact } from '@/components/sections/about-contact';
 
 export const metadata = {
@@ -19,7 +18,6 @@ export default function AboutPage() {
       <AboutHistory />
       <AboutValues />
       <AboutTeam />
-      <AboutTestimonials />
       <AboutContact />
       <Separator />
     </div>
