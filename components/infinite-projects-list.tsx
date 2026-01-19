@@ -10,12 +10,16 @@ interface InfiniteProjectsListProps {
   initialProjects: Project[];
   initialHasMore: boolean;
   initialTotal: number;
+  architectId?: string;
+  manufacturerId?: string;
 }
 
 export function InfiniteProjectsList({
   initialProjects,
   initialHasMore,
   initialTotal,
+  architectId,
+  manufacturerId,
 }: InfiniteProjectsListProps) {
   const [projects, setProjects] = useState<Project[]>(initialProjects);
   const [page, setPage] = useState(1);
@@ -32,7 +36,14 @@ export function InfiniteProjectsList({
     setError(null);
 
     try {
-      const response = await fetch(`/api/projects?page=${page}&pageSize=9`);
+      const params = new URLSearchParams({
+        page: page.toString(),
+        pageSize: '9',
+      });
+      if (architectId) params.set('architectId', architectId);
+      if (manufacturerId) params.set('manufacturerId', manufacturerId);
+
+      const response = await fetch(`/api/projects?${params.toString()}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch projects');
@@ -49,7 +60,14 @@ export function InfiniteProjectsList({
     } finally {
       setIsLoading(false);
     }
-  }, [page, hasMore, isLoading]);
+  }, [page, hasMore, isLoading, architectId, manufacturerId]);
+
+  // Reset when filters change (initial data comes from server)
+  useEffect(() => {
+    setProjects(initialProjects);
+    setHasMore(initialHasMore);
+    setPage(1);
+  }, [initialProjects, initialHasMore, architectId, manufacturerId]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

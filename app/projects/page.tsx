@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 
 import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
-import { getPaginatedProjects } from '@/lib/sanity';
+import { getPaginatedProjects, getProjectFilterOptions } from '@/lib/sanity';
 import { InfiniteProjectsList } from '@/components/infinite-projects-list';
+import { ProjectFilters } from '@/components/project-filters';
 import { CtaSection } from '@/components/sections/cta-section';
 
 export const metadata: Metadata = {
@@ -12,10 +13,20 @@ export const metadata: Metadata = {
     'Explore our showcase of projects featuring high-quality architectural products from G. Davis & Associates.',
 };
 
-// This function is called at build time to generate the static page
-export default async function ProjectsPage() {
-  // Fetch initial batch of projects (page 0, 9 items)
-  const { projects, hasMore, total } = await getPaginatedProjects(0, 9);
+interface ProjectsPageProps {
+  searchParams: Promise<{ architect?: string; manufacturer?: string }>;
+}
+
+export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
+  const params = await searchParams;
+  const architectId = params.architect;
+  const manufacturerId = params.manufacturer;
+
+  // Fetch initial batch of projects with filters
+  const [{ projects, hasMore, total }, filterOptions] = await Promise.all([
+    getPaginatedProjects(0, 9, { architectId, manufacturerId }),
+    getProjectFilterOptions(),
+  ]);
 
   return (
     <div className="flex flex-col w-full">
@@ -34,21 +45,12 @@ export default async function ProjectsPage() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                <Button variant="default" size="sm">
-                  All Projects
-                </Button>
-                {[
-                  'Commercial',
-                  'Residential',
-                  'Institutional',
-                  'Hospitality',
-                ].map((category) => (
-                  <Button key={category} variant="outline" size="sm">
-                    {category}
-                  </Button>
-                ))}
-              </div>
+              <Suspense fallback={null}>
+                <ProjectFilters
+                  architects={filterOptions.architects}
+                  manufacturers={filterOptions.manufacturers}
+                />
+              </Suspense>
             </div>
           </div>
 
@@ -56,6 +58,8 @@ export default async function ProjectsPage() {
             initialProjects={projects}
             initialHasMore={hasMore}
             initialTotal={total}
+            architectId={architectId}
+            manufacturerId={manufacturerId}
           />
         </div>
       </section>

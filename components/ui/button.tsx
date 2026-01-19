@@ -19,11 +19,16 @@ const buttonVariants = cva(
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
-        // Custom variants
+        // Custom variants for hero sections with background images
         white:
-          'bg-white text-primary hover:bg-white/90 dark:bg-white dark:text-primary dark:hover:bg-white/90',
+          'bg-white text-gray-900 hover:bg-white/90',
         whiteOutline:
-          'border border-white text-white hover:bg-white/20 dark:border-white dark:text-white dark:hover:bg-white/20',
+          'border border-white text-white hover:bg-white/20',
+        // Variants for primary background sections (CTA)
+        primaryForeground:
+          'bg-primary-foreground text-primary hover:bg-primary-foreground/90',
+        primaryForegroundOutline:
+          'border border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10',
       },
       size: {
         default: 'h-9 px-4 py-2',

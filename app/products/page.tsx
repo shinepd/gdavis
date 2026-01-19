@@ -1,16 +1,8 @@
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { CtaSection } from '@/components/sections/cta-section';
 import { getManufacturersByCategory, urlFor } from '@/lib/sanity';
 import Image from 'next/image';
-import Link from 'next/link';
+import { ExternalLink } from 'lucide-react';
 
 export default async function ProductsPage() {
   const categoriesWithManufacturers = await getManufacturersByCategory();
@@ -18,7 +10,7 @@ export default async function ProductsPage() {
   return (
     <div className="flex flex-col w-full">
       {/* Hero Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 xl:py-40 relative overflow-hidden">
+      <section className="w-full py-12 md:py-20 lg:py-28 relative overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="max-w-[800px]">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4">
@@ -33,19 +25,9 @@ export default async function ProductsPage() {
       </section>
 
       {/* Product Categories */}
-      <section className="w-full py-12 md:py-24">
+      <section className="w-full pb-16 md:pb-24">
         <div className="container mx-auto px-4">
-          <div className="space-y-4 mb-12">
-            <h2 className="text-3xl font-bold tracking-tighter">
-              Product Categories
-            </h2>
-            <p className="text-muted-foreground max-w-[700px]">
-              Explore our extensive range of high-quality architectural products
-              for your design and construction needs.
-            </p>
-          </div>
-
-          <div className="space-y-20">
+          <div className="space-y-16">
             {categoriesWithManufacturers.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">
@@ -54,88 +36,63 @@ export default async function ProductsPage() {
                 </p>
               </div>
             ) : (
-              categoriesWithManufacturers.map((category, categoryIndex) => (
-                <div key={category.id} id={category.id} className="space-y-8">
-                  <div className="space-y-2">
-                    <h3 className="text-2xl font-bold">{category.title}</h3>
+              categoriesWithManufacturers.map((category) => (
+                <div key={category.id} id={category.id}>
+                  <div className="mb-6">
+                    <h2 className="text-xl font-semibold tracking-tight mb-1">
+                      {category.title}
+                    </h2>
                     {category.description && (
-                      <p className="text-muted-foreground">
+                      <p className="text-sm text-muted-foreground">
                         {category.description}
                       </p>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                    {category.manufacturers.map((manufacturer) => (
-                      <Card
-                        key={manufacturer._id}
-                        className="h-full flex flex-col"
-                      >
-                        <CardHeader className="flex-1">
-                          {manufacturer.logo ? (
-                            <div className="w-full h-[120px] relative mb-4">
-                              <Image
-                                src={urlFor(manufacturer.logo)
-                                  .width(600)
-                                  .height(300)
-                                  .fit('max')
-                                  .url()}
-                                alt={manufacturer.name}
-                                fill
-                                className="object-contain"
-                              />
-                            </div>
-                          ) : (
-                            <div className="h-[120px] flex items-center justify-center mb-4">
-                              <CardTitle className="text-center text-lg">
-                                {manufacturer.name}
-                              </CardTitle>
-                            </div>
-                          )}
-                        </CardHeader>
-                        {(manufacturer.description || manufacturer.website) && (
-                          <CardContent>
-                            {manufacturer.description && (
-                              <p className="text-sm text-muted-foreground line-clamp-3">
-                                {manufacturer.description}
-                              </p>
-                            )}
-                          </CardContent>
-                        )}
-                        <CardFooter className="pt-0">
-                          {manufacturer.website ? (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="w-full"
-                              asChild
-                            >
-                              <a
-                                href={manufacturer.website}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                Visit Website
-                              </a>
-                            </Button>
-                          ) : (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="w-full"
-                              asChild
-                            >
-                              <Link href="/contact">Request Info</Link>
-                            </Button>
-                          )}
-                        </CardFooter>
-                      </Card>
-                    ))}
-                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    {category.manufacturers.map((manufacturer) => {
+                      const CardWrapper = manufacturer.website ? 'a' : 'div';
+                      const cardProps = manufacturer.website
+                        ? {
+                            href: manufacturer.website,
+                            target: '_blank',
+                            rel: 'noopener noreferrer',
+                          }
+                        : {};
 
-                  {categoryIndex < categoriesWithManufacturers.length - 1 && (
-                    <Separator className="my-8" />
-                  )}
+                      return (
+                        <CardWrapper
+                          key={manufacturer._id}
+                          {...cardProps}
+                          className={`group relative bg-card border rounded-lg p-4 flex flex-col items-center justify-center aspect-[4/3] transition-all duration-200 ${
+                            manufacturer.website
+                              ? 'hover:border-primary hover:shadow-md cursor-pointer'
+                              : ''
+                          }`}
+                        >
+                          {manufacturer.logo ? (
+                            <Image
+                              src={urlFor(manufacturer.logo)
+                                .width(400)
+                                .fit('max')
+                                .url()}
+                              alt={manufacturer.name}
+                              width={160}
+                              height={80}
+                              className="object-contain max-h-[60px] w-auto transition-transform duration-200 group-hover:scale-105"
+                            />
+                          ) : (
+                            <span className="text-sm font-medium text-center">
+                              {manufacturer.name}
+                            </span>
+                          )}
+                          {manufacturer.website && (
+                            <ExternalLink className="absolute top-2 right-2 h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                          )}
+                        </CardWrapper>
+                      );
+                    })}
+                  </div>
                 </div>
               ))
             )}

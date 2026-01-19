@@ -101,7 +101,7 @@ export interface Project {
 // Function to fetch all projects
 export async function getAllProjects(): Promise<Project[]> {
   return client.fetch(`
-    *[_type == "project"] | order(publishedAt desc) {
+    *[_type == "project"] | order(projectDate desc) {
       _id,
       title,
       slug,
@@ -131,18 +131,35 @@ export async function getAllProjects(): Promise<Project[]> {
   `);
 }
 
-// Function to fetch paginated projects
+// Function to fetch paginated projects with optional filters
 export async function getPaginatedProjects(
   page: number = 0,
-  pageSize: number = 9
+  pageSize: number = 9,
+  filters?: { architectId?: string; manufacturerId?: string }
 ): Promise<{ projects: Project[]; hasMore: boolean; total: number }> {
   const start = page * pageSize;
   const end = start + pageSize;
 
-  // Fetch projects with pagination
+  // Build filter conditions
+  const conditions = ['_type == "project"'];
+  const params: Record<string, unknown> = { start, end };
+
+  if (filters?.architectId) {
+    conditions.push('references($architectId)');
+    params.architectId = filters.architectId;
+  }
+
+  if (filters?.manufacturerId) {
+    conditions.push('references($manufacturerId)');
+    params.manufacturerId = filters.manufacturerId;
+  }
+
+  const filterQuery = conditions.join(' && ');
+
+  // Fetch projects with pagination and filters
   const projects = await client.fetch(
     `
-    *[_type == "project"] | order(publishedAt desc) [$start...$end] {
+    *[${filterQuery}] | order(projectDate desc) [$start...$end] {
       _id,
       title,
       slug,
@@ -170,11 +187,14 @@ export async function getPaginatedProjects(
       location
     }
   `,
-    { start, end }
+    params
   );
 
-  // Get total count
-  const total = await client.fetch(`count(*[_type == "project"])`);
+  // Get total count with same filters
+  const total = await client.fetch(
+    `count(*[${filterQuery}])`,
+    params
+  );
 
   return {
     projects,
@@ -269,6 +289,42 @@ export async function getAllManufacturers(): Promise<Manufacturer[]> {
       category
     }
   `);
+}
+
+// Function to fetch all architects
+export async function getAllArchitects(): Promise<Architect[]> {
+  return client.fetch(`
+    *[_type == "architect"] | order(name asc) {
+      _id,
+      name,
+      slug,
+      bio,
+      image
+    }
+  `);
+}
+
+// Function to fetch filter options (architects and manufacturers that have projects)
+export async function getProjectFilterOptions(): Promise<{
+  architects: Array<{ _id: string; name: string }>;
+  manufacturers: Array<{ _id: string; name: string }>;
+}> {
+  const [architects, manufacturers] = await Promise.all([
+    client.fetch(`
+      *[_type == "architect" && count(*[_type == "project" && references(^._id)]) > 0] | order(name asc) {
+        _id,
+        name
+      }
+    `),
+    client.fetch(`
+      *[_type == "manufacturer" && count(*[_type == "project" && references(^._id)]) > 0] | order(name asc) {
+        _id,
+        name
+      }
+    `),
+  ]);
+
+  return { architects, manufacturers };
 }
 
 // Function to fetch manufacturers grouped by category

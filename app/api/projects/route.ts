@@ -5,9 +5,14 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const page = parseInt(searchParams.get('page') || '0');
   const pageSize = parseInt(searchParams.get('pageSize') || '9');
+  const architectId = searchParams.get('architectId') || undefined;
+  const manufacturerId = searchParams.get('manufacturerId') || undefined;
 
   try {
-    const data = await getPaginatedProjects(page, pageSize);
+    const data = await getPaginatedProjects(page, pageSize, {
+      architectId,
+      manufacturerId,
+    });
     return NextResponse.json(data);
   } catch (error) {
     console.error('Error fetching projects:', error);

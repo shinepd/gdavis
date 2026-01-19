@@ -32,10 +32,10 @@ export function CtaSection({
               <p className="text-primary-foreground/80">{description}</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-end">
-              <Button size="lg" variant="white" asChild>
+              <Button size="lg" variant="primaryForeground" asChild>
                 <Link href={primaryButtonLink}>{primaryButtonText}</Link>
               </Button>
-              <Button size="lg" variant="whiteOutline" asChild>
+              <Button size="lg" variant="primaryForegroundOutline" asChild>
                 <Link href={secondaryButtonLink}>{secondaryButtonText}</Link>
               </Button>
             </div>
