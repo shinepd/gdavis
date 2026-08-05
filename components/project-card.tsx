@@ -1,64 +1,77 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import { format } from 'date-fns';
-import { Project, urlFor } from '@/lib/sanity';
+
+import { ImageSlot } from '@/components/image-slot';
+import { imageUrl, type ProjectCardData } from '@/lib/sanity';
+import { projectMeta } from '@/lib/site';
+import { cn } from '@/lib/utils';
 
 interface ProjectCardProps {
-  project: Project;
+  project: ProjectCardData;
+  /** Image crop - the grids use 4/3, the home rail 4/5, the products rail 3/4. */
+  aspect?: '4 / 3' | '4 / 5' | '3 / 4';
+  size?: 'sm' | 'md';
+  /** Hides the mono manufacturer line (the home rail runs without it). */
+  showManufacturers?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
-  // Format the date if available
-  const formattedDate = project.projectDate
-    ? format(new Date(project.projectDate), 'yyyy')
-    : '';
+const CROPS = {
+  '4 / 3': [800, 600],
+  '4 / 5': [720, 900],
+  '3 / 4': [720, 960],
+} as const;
+
+export function ProjectCard({
+  project,
+  aspect = '4 / 3',
+  size = 'md',
+  showManufacturers = true,
+  className,
+  style,
+}: ProjectCardProps) {
+  const [width, height] = CROPS[aspect];
+  const manufacturers = (project.manufacturers ?? [])
+    .map((manufacturer) => manufacturer.name.trim())
+    .filter(Boolean);
 
   return (
-    <div className="group">
-      <Link href={`/projects/${project.slug.current}`} className="block">
-        <div className="overflow-hidden rounded-lg mb-4">
-          {project.coverImage && project.coverImage.asset && (
-            <div className="aspect-[4/3] relative w-full">
-              <Image
-                src={urlFor(project.coverImage).width(600).height(450).url()}
-                alt={project.title}
-                width={600}
-                height={450}
-                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
+    <Link
+      href={`/projects/${project.slug.current}`}
+      className={cn('group flex flex-col gap-3.5 hover:text-ink', className)}
+      style={style}
+    >
+      <ImageSlot
+        src={imageUrl(project.coverImage, width, height)}
+        alt={project.title.trim()}
+        aspect={aspect}
+        caption="project photo"
+        sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 340px"
+        className="transition-opacity duration-200 group-hover:opacity-90"
+      />
+      <div>
+        <div
+          className={cn(
+            'font-semibold tracking-[-0.018em] transition-colors group-hover:text-brand',
+            size === 'md' ? 'text-[19px] leading-[1.2]' : 'text-[16px]'
           )}
+        >
+          {project.title.trim()}
         </div>
-        <h3 className="text-xl font-heading uppercase tracking-wide mb-2">
-          {project.title}
-        </h3>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-muted-foreground">
-            {project.location || 'Location not specified'}
-          </span>
-          <span className="text-sm font-medium">{formattedDate}</span>
+        <div
+          className={cn(
+            'mt-1 text-ink-3',
+            size === 'md' ? 'text-[14px]' : 'text-[13px]'
+          )}
+        >
+          {projectMeta(project)}
         </div>
-
-        {/* Display the architects */}
-        {project.architects && project.architects.length > 0 && (
-          <p className="text-sm text-muted-foreground mb-3">
-            Architects: {project.architects.map((a) => a.name).join(', ')}
-          </p>
+        {showManufacturers && manufacturers.length > 0 && (
+          <div className="mt-2.5 font-mono text-[10.5px] uppercase tracking-[0.1em] text-brand">
+            {manufacturers.join(' · ')}
+          </div>
         )}
-
-        {/* Display manufacturers */}
-        <div className="flex flex-wrap gap-2 mt-3">
-          {project.manufacturers &&
-            project.manufacturers.map((manufacturer) => (
-              <span
-                key={manufacturer._id}
-                className="text-xs px-2 py-1 rounded-full bg-secondary/50 text-secondary-foreground"
-              >
-                {manufacturer.name}
-              </span>
-            ))}
-        </div>
-      </Link>
-    </div>
+      </div>
+    </Link>
   );
 }

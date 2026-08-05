@@ -3,137 +3,224 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-heading: var(--font-heading);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-}
-
+/*
+ * Design tokens - G. Davis & Associates site redesign.
+ * Light theme on :root, dark theme on html[data-theme="dark"].
+ * next-themes writes both `data-theme` and `class` on <html>, so the `.dark`
+ * selector below keeps Tailwind's `dark:` variant and the shadcn primitives
+ * in sync with the same palette.
+ */
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.13 0.028 261.692);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.13 0.028 261.692);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.13 0.028 261.692);
-  --primary: oklch(0.21 0.034 264.665);
-  --primary-foreground: oklch(0.985 0.002 247.839);
-  --secondary: oklch(0.967 0.003 264.542);
-  --secondary-foreground: oklch(0.21 0.034 264.665);
-  --muted: oklch(0.967 0.003 264.542);
-  --muted-foreground: oklch(0.551 0.027 264.364);
-  --accent: oklch(0.967 0.003 264.542);
-  --accent-foreground: oklch(0.21 0.034 264.665);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.928 0.006 264.531);
-  --input: oklch(0.928 0.006 264.531);
-  --ring: oklch(0.707 0.022 261.325);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0.002 247.839);
-  --sidebar-foreground: oklch(0.13 0.028 261.692);
-  --sidebar-primary: oklch(0.21 0.034 264.665);
-  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
-  --sidebar-accent: oklch(0.967 0.003 264.542);
-  --sidebar-accent-foreground: oklch(0.21 0.034 264.665);
-  --sidebar-border: oklch(0.928 0.006 264.531);
-  --sidebar-ring: oklch(0.707 0.022 261.325);
+  --bg: oklch(97.5% 0.006 85);
+  --surface: oklch(100% 0 0);
+  --ink: oklch(21% 0.012 60);
+  --ink-2: oklch(45% 0.01 60);
+  --ink-3: oklch(62% 0.008 60);
+  --line: oklch(88% 0.008 75);
+  --accent: oklch(56% 0.13 45);
+  --on-accent: oklch(100% 0 0);
+  --accent-soft: oklch(94% 0.03 45);
+  --swatch: oklch(92% 0.01 75);
+  --swatch-2: oklch(88% 0.012 75);
 }
 
+html[data-theme='dark'],
 .dark {
-  --background: oklch(0.13 0.028 261.692);
-  --foreground: oklch(0.985 0.002 247.839);
-  --card: oklch(0.21 0.034 264.665);
-  --card-foreground: oklch(0.985 0.002 247.839);
-  --popover: oklch(0.21 0.034 264.665);
-  --popover-foreground: oklch(0.985 0.002 247.839);
-  --primary: oklch(0.928 0.006 264.531);
-  --primary-foreground: oklch(0.21 0.034 264.665);
-  --secondary: oklch(0.278 0.033 256.848);
-  --secondary-foreground: oklch(0.985 0.002 247.839);
-  --muted: oklch(0.278 0.033 256.848);
-  --muted-foreground: oklch(0.707 0.022 261.325);
-  --accent: oklch(0.278 0.033 256.848);
-  --accent-foreground: oklch(0.985 0.002 247.839);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.21 0.034 264.665);
-  --sidebar-foreground: oklch(0.985 0.002 247.839);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
-  --sidebar-accent: oklch(0.278 0.033 256.848);
-  --sidebar-accent-foreground: oklch(0.985 0.002 247.839);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --bg: oklch(20% 0.012 250);
+  --surface: oklch(25% 0.014 250);
+  --ink: oklch(96% 0.004 250);
+  --ink-2: oklch(76% 0.01 250);
+  --ink-3: oklch(60% 0.012 250);
+  --line: oklch(34% 0.014 250);
+  --accent: oklch(72% 0.12 45);
+  --on-accent: oklch(20% 0.012 250);
+  --accent-soft: oklch(30% 0.03 45);
+  --swatch: oklch(29% 0.014 250);
+  --swatch-2: oklch(33% 0.016 250);
+}
+
+@theme inline {
+  --font-sans: var(--font-archivo);
+  --font-mono: var(--font-plex-mono);
+
+  /* Design palette. The terracotta accent is exposed as `brand` so it does not
+     collide with shadcn's `accent`, which means a subtle hover wash. */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-brand: var(--accent);
+  --color-brand-soft: var(--accent-soft);
+  --color-on-brand: var(--on-accent);
+  --color-swatch: var(--swatch);
+  --color-swatch-2: var(--swatch-2);
+
+  /* shadcn/ui primitives, remapped onto the design palette. */
+  --color-background: var(--bg);
+  --color-foreground: var(--ink);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--ink);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--ink);
+  --color-primary-foreground: var(--bg);
+  --color-secondary: var(--accent-soft);
+  --color-secondary-foreground: var(--ink);
+  --color-muted: var(--swatch);
+  --color-muted-foreground: var(--ink-3);
+  --color-accent: var(--accent-soft);
+  --color-accent-foreground: var(--ink);
+  --color-destructive: var(--accent);
+  --color-border: var(--line);
+  --color-input: var(--line);
+  --color-ring: var(--accent);
+
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-line;
   }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
-    @apply bg-background text-foreground font-sans leading-relaxed;
+    @apply bg-bg text-ink font-sans antialiased;
+    transition:
+      background 240ms ease,
+      color 240ms ease;
   }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--accent);
+  }
+
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    @apply font-heading font-medium uppercase tracking-wider;
+    margin: 0;
+    font-weight: 600;
+    text-wrap: balance;
   }
-  h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl;
+
+  p {
+    text-wrap: pretty;
   }
-  h2 {
-    @apply text-3xl md:text-4xl;
+
+  input,
+  textarea,
+  button,
+  select {
+    font-family: inherit;
   }
-  h3 {
-    @apply text-2xl md:text-3xl;
+
+  /* Inputs and textareas share one focus treatment across the site. */
+  input:focus-visible,
+  textarea:focus-visible {
+    border-color: var(--accent);
+    outline: none;
+  }
+}
+
+@layer components {
+  /* Page container: 1360px max, 40px gutters (20px on small screens). */
+  .container-page {
+    width: 100%;
+    max-width: 1360px;
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .container-page {
+      padding-inline: 40px;
+    }
+  }
+
+  /* Image placeholder: diagonal swatch stripes, per the design handoff. */
+  .swatch-stripes {
+    background: repeating-linear-gradient(
+      135deg,
+      var(--swatch) 0 9px,
+      var(--swatch-2) 9px 18px
+    );
+  }
+
+  .swatch-stripes-lg {
+    background: repeating-linear-gradient(
+      135deg,
+      var(--swatch) 0 11px,
+      var(--swatch-2) 11px 22px
+    );
+  }
+
+  /* Hairline grid: a 1px gap over --line reads as a shared rule between cards. */
+  .hairline-grid {
+    display: grid;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  /* Underlined "more" link. */
+  .link-more {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 3px;
+  }
+}
+
+/* Scroll reveal - elements start hidden and rise into place once observed. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rv {
+  opacity: 0;
+}
+
+/* The observer sets `data-rv` rather than a class: React owns `className` and
+   would wipe an imperatively added class on the next render, stranding a card
+   at opacity 0 after a filter change. */
+.rv[data-rv='in'] {
+  animation: rise 620ms cubic-bezier(0.22, 0.68, 0.16, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rv,
+  .rv[data-rv='in'] {
+    opacity: 1;
+    animation: none;
+  }
+
+  body {
+    transition: none;
   }
 }

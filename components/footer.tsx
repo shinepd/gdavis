@@ -1,89 +1,74 @@
 import Link from 'next/link';
-import { Mail, MapPin, Phone } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { NewsletterForm } from '@/components/newsletter-form';
+import { MonoLabel } from '@/components/ui/eyebrow';
+import { GEORGE, NAV_ITEMS, SITE } from '@/lib/site';
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const siteLinks = NAV_ITEMS.filter((item) => item.href !== '/');
 
   return (
-    <footer className="w-full bg-background border-t">
-      <div className="py-12 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Company Info */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">G. Davis & Associates</h3>
-            <p className="text-sm text-muted-foreground">
-              Finding the perfect architectural element shouldn&apos;t be the
-              hardest part of your design.
-            </p>
-            <div className="flex flex-col space-y-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                <span>12004 Pawnee Lane, Leawood, KS 66209</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4" />
-                <span>(913) 231-8071</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4" />
-                <span>george@gdavisassociates.com</span>
-              </div>
-            </div>
+    <footer className="border-t border-line bg-surface">
+      <div className="container-page grid gap-10 pt-14 pb-8 md:grid-cols-2 lg:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))]">
+        <div className="flex flex-col gap-3.5">
+          <div className="text-[16px] font-semibold tracking-[-0.015em]">
+            {SITE.name}
           </div>
-
-          {/* Quick Links */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Quick Links</h3>
-            <nav className="flex flex-col space-y-2 text-sm">
-              <Link
-                href="/about"
-                className="hover:text-primary transition-colors"
-              >
-                About Us
-              </Link>
-              <Link
-                href="/products"
-                className="hover:text-primary transition-colors"
-              >
-                Products
-              </Link>
-              <Link
-                href="/projects"
-                className="hover:text-primary transition-colors"
-              >
-                Projects
-              </Link>
-              <Link
-                href="/contact"
-                className="hover:text-primary transition-colors"
-              >
-                Contact Us
-              </Link>
-            </nav>
-          </div>
-
-          {/* Newsletter */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Stay Updated</h3>
-            <p className="text-sm text-muted-foreground">
-              Subscribe to our newsletter for product updates and industry news.
-            </p>
-            <div className="flex items-center space-x-2">
-              <Button variant="default">Subscribe</Button>
-            </div>
-          </div>
-        </div>
-
-        <Separator className="my-8" />
-
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-muted-foreground">
-            © {currentYear} G. Davis & Associates. All rights reserved.
+          <p className="max-w-[34ch] text-[14px] leading-[1.55] text-ink-2">
+            {SITE.tagline}
           </p>
         </div>
+
+        <div className="flex flex-col gap-2.5 text-[14px]">
+          <MonoLabel className="mb-1">Site</MonoLabel>
+          {siteLinks.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="text-ink-2 transition-colors hover:text-brand"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-2.5 text-[14px]">
+          <MonoLabel className="mb-1">Office</MonoLabel>
+          <span className="leading-[1.5] text-ink-2">
+            {SITE.address.street}
+            <br />
+            {SITE.address.city}, {SITE.address.state} {SITE.address.zip}
+          </span>
+          <a
+            href={GEORGE.phoneHref}
+            className="text-ink-2 transition-colors hover:text-brand"
+          >
+            {GEORGE.phone}
+          </a>
+          <a
+            href={`mailto:${GEORGE.email}`}
+            className="text-ink-2 transition-colors hover:text-brand"
+          >
+            {GEORGE.email}
+          </a>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <MonoLabel>Stay updated</MonoLabel>
+          <p className="text-[14px] leading-[1.5] text-ink-2">
+            Product updates and industry news, occasionally.
+          </p>
+          <NewsletterForm />
+        </div>
+      </div>
+
+      <div className="container-page flex flex-wrap justify-between gap-4 pb-7 text-[13px] text-ink-3">
+        <span>
+          © {new Date().getFullYear()} {SITE.name}. All rights reserved.
+        </span>
+        <span className="font-mono text-[10.5px] uppercase tracking-[0.1em]">
+          {SITE.address.city}, Kansas
+        </span>
       </div>
     </footer>
   );

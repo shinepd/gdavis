@@ -1,63 +1,33 @@
 'use client';
 
-import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
-import { Button } from '@/components/ui/button';
-
+/**
+ * Mono pill that labels the theme it will switch *to* - "Dark" while light,
+ * "Light" while dark. next-themes persists the choice under `gd-theme` and
+ * writes both `class` and `data-theme` on <html>.
+ */
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Ensure component is mounted to avoid hydration mismatch
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => setMounted(true), []);
 
-  const toggleTheme = () => {
-    if (theme === 'dark') {
-      setTheme('light');
-    } else {
-      setTheme('dark');
-    }
-  };
-
-  if (!mounted) {
-    return (
-      <Button variant="outline" size="icon">
-        <Sun className="h-4 w-4 transition-all scale-100 dark:scale-0" />
-        <Moon className="absolute h-4 w-4 transition-all scale-0 dark:scale-100" />
-        <span className="sr-only">Toggle theme</span>
-      </Button>
-    );
-  }
+  const target = resolvedTheme === 'dark' ? 'light' : 'dark';
+  const label = target === 'dark' ? 'Dark' : 'Light';
 
   return (
-    <Button
-      variant="outline"
-      size="icon"
-      onClick={toggleTheme}
-      className="rounded-full relative overflow-hidden"
+    <button
+      type="button"
+      onClick={() => setTheme(target)}
+      aria-label={`Switch to ${target} theme`}
+      className="flex h-9 items-center rounded-full border border-line px-3 font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-2 transition-colors hover:border-ink-3 hover:text-ink"
     >
-      <div className="relative w-[1.2rem] h-[1.2rem]">
-        <Sun
-          className={`h-[1.2rem] w-[1.2rem] absolute inset-0 transition-transform duration-300 ease-in-out ${
-            theme === 'dark'
-              ? 'translate-y-0 opacity-100'
-              : 'translate-y-full opacity-0'
-          }`}
-        />
-        <Moon
-          className={`h-[1.2rem] w-[1.2rem] absolute inset-0 transition-transform duration-300 ease-in-out ${
-            theme === 'dark'
-              ? '-translate-y-full opacity-0'
-              : 'translate-y-0 opacity-100'
-          }`}
-        />
-      </div>
-      <span className="sr-only">Toggle theme</span>
-    </Button>
+      {/* Rendered blank until mounted so the label never mismatches on hydration. */}
+      <span className={mounted ? undefined : 'invisible'}>
+        {mounted ? label : 'Dark'}
+      </span>
+    </button>
   );
 }

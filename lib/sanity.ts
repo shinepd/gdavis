@@ -1,6 +1,8 @@
 import { createClient } from 'next-sanity';
 import imageUrlBuilder from '@sanity/image-url';
 
+import { CATEGORY_META } from '@/lib/site';
+
 export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID as string,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET as string,
@@ -13,6 +15,22 @@ const builder = imageUrlBuilder(client);
 
 export function urlFor(source: SanityImage) {
   return builder.image(source);
+}
+
+/**
+ * Resolves a cropped, hotspot-aware URL for a Sanity image, returning
+ * `undefined` when the document has no image so callers can fall back to the
+ * design's striped placeholder.
+ */
+export function imageUrl(
+  source: SanityImage | undefined,
+  width: number,
+  height?: number
+): string | undefined {
+  if (!source?.asset?._ref) return undefined;
+
+  const image = urlFor(source).width(width).auto('format').quality(80);
+  return (height ? image.height(height).fit('crop') : image).url();
 }
 
 // TypeScript interfaces for Sanity schemas
@@ -127,6 +145,38 @@ export async function getAllProjects(): Promise<Project[]> {
       projectDate,
       publishedAt,
       location
+    }
+  `);
+}
+
+/** The subset of a project needed to render a card in a grid. */
+export interface ProjectCardData {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  location?: string;
+  projectDate?: string;
+  architects?: { name: string }[];
+  manufacturers?: { _id: string; name: string; slug?: { current: string } }[];
+  coverImage?: SanityImage;
+}
+
+/**
+ * Every project, newest first, with just the fields the card grids need.
+ * The Projects index filters this list on the client so the manufacturer
+ * counter stays live and a filtered view is shareable via the URL.
+ */
+export async function getProjectCards(): Promise<ProjectCardData[]> {
+  return client.fetch(`
+    *[_type == "project" && defined(slug.current)] | order(projectDate desc) {
+      _id,
+      title,
+      slug,
+      location,
+      projectDate,
+      architects[]->{ name },
+      manufacturers[]->{ _id, name, slug },
+      coverImage
     }
   `);
 }
@@ -327,18 +377,24 @@ export async function getProjectFilterOptions(): Promise<{
   return { architects, manufacturers };
 }
 
-// Function to fetch manufacturers grouped by category
+export interface ManufacturerCategory {
+  /** The category slug stored on each manufacturer, e.g. `metal-ceilings`. */
+  slug: string;
+  title: string;
+  manufacturers: Manufacturer[];
+}
+
+/**
+ * Groups the currently represented manufacturers by their category slug.
+ * Display copy for each category lives in `lib/site.ts` (`CATEGORY_META`);
+ * anything Sanity has that isn't described there falls back to a title derived
+ * from the slug, so a new category still renders.
+ */
 export async function getManufacturersByCategory(): Promise<
-  Array<{
-    id: string;
-    title: string;
-    description?: string;
-    manufacturers: Manufacturer[];
-  }>
+  ManufacturerCategory[]
 > {
-  // Fetch all manufacturers with status "current"
-  const manufacturers = await client.fetch(`
-    *[_type == "manufacturer" && status == "current"] | order(name asc) {
+  const manufacturers: Manufacturer[] = await client.fetch(`
+    *[_type == "manufacturer" && status == "current" && defined(category)] | order(name asc) {
       _id,
       name,
       slug,
@@ -350,82 +406,24 @@ export async function getManufacturersByCategory(): Promise<
     }
   `);
 
-  // Map category slugs to readable titles and descriptions
-  const categoryInfo: Record<string, { title: string; description: string }> = {
-    'architectural-glass': {
-      title: 'Architectural Glass',
-      description:
-        'Sleek, versatile glass systems for light, visibility, and dynamic space division with modern appeal.',
-    },
-    'terracotta-rainscreens-and-cladding': {
-      title: 'Terracotta Rainscreens and Cladding',
-      description:
-        'Natural, sustainable facades for a distinctive, warm aesthetic with excellent thermal performance and durability.',
-    },
-    'wood-ceilings-and-wall-panels': {
-      title: 'Wood Ceilings and Wall Panels',
-      description:
-        'Warm, natural wood systems for a premium aesthetic that enhances biophilic design and acoustic comfort.',
-    },
-    'wood-rainscreens': {
-      title: 'Wood Rainscreens',
-      description:
-        'Elegant wood siding systems that combine natural beauty with a ventilated facade for maximum longevity and curb appeal.',
-    },
-    'metal-rainscreens-and-cladding': {
-      title: 'Metal Rainscreens and Cladding',
-      description:
-        'Modern metal systems offering a sharp, high-tech facade that is both highly durable and resistant to the elements.',
-    },
-    'metal-ceilings': {
-      title: 'Metal Ceilings',
-      description:
-        'Durable, cleanable ceiling systems for a sleek, modern finish that excels in high-traffic and specialized environments.',
-    },
-    'concrete-rainscreens': {
-      title: 'Concrete Rainscreens',
-      description:
-        'Durable, non-combustible facade systems offering a robust, low-maintenance aesthetic with superior weather protection.',
-    },
-    'acoustical-ceilings': {
-      title: 'Acoustical Ceilings',
-      description:
-        'High-performance ceilings engineered to optimize sound quality and control noise in any commercial space.',
-    },
-    'composite-stone': {
-      title: 'Composite Stone',
-      description:
-        'Lightweight, high-strength panels that deliver the look of natural stone for interior and exterior applications without the weight.',
-    },
-    'zinc-rainscreens-and-cladding': {
-      title: 'Zinc Rainscreens and Cladding',
-      description:
-        'Premium metal facades known for their self-healing properties and distinctive patina that matures beautifully over time.',
-    },
-  };
+  const grouped = new Map<string, Manufacturer[]>();
+  for (const manufacturer of manufacturers) {
+    const category = manufacturer.category as string;
+    grouped.set(category, [...(grouped.get(category) ?? []), manufacturer]);
+  }
 
-  // Group manufacturers by category
-  const grouped: Record<string, Manufacturer[]> = manufacturers.reduce(
-    (acc: Record<string, Manufacturer[]>, manufacturer: Manufacturer) => {
-      const category = manufacturer.category || 'uncategorized';
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(manufacturer);
-      return acc;
-    },
-    {} as Record<string, Manufacturer[]>
-  );
+  return Array.from(grouped, ([slug, group]) => ({
+    slug,
+    title: CATEGORY_META[slug]?.title ?? titleFromSlug(slug),
+    manufacturers: group,
+  })).sort((a, b) => a.title.localeCompare(b.title));
+}
 
-  // Convert to array format and sort alphabetically by title
-  return Object.entries(grouped)
-    .map(([id, manufacturers]) => ({
-      id,
-      title: categoryInfo[id]?.title || id,
-      description: categoryInfo[id]?.description,
-      manufacturers,
-    }))
-    .sort((a, b) => a.title.localeCompare(b.title));
+function titleFromSlug(slug: string): string {
+  return slug
+    .split('-')
+    .map((word) => (word === 'and' ? '&' : word[0].toUpperCase() + word.slice(1)))
+    .join(' ');
 }
 
 // Function to fetch a single product category by slug
