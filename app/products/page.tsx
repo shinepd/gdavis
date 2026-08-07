@@ -1,114 +1,190 @@
-import { Separator } from '@/components/ui/separator';
-import { CtaSection } from '@/components/sections/cta-section';
-import { getManufacturersByCategory, urlFor } from '@/lib/sanity';
-import Image from 'next/image';
-import { ExternalLink } from 'lucide-react';
+import { Suspense } from 'react';
+import Link from 'next/link';
+
+import { ImageSlot } from '@/components/image-slot';
+import { ProjectCard } from '@/components/project-card';
+import {
+  ProductCategoryGrid,
+  type ProductCategoryCard,
+} from '@/components/product-category-grid';
+import { revealDelay } from '@/lib/reveal';
+import { Eyebrow } from '@/components/ui/eyebrow';
+import { buildCategoryImages } from '@/lib/category-images';
+import { getManufacturersByCategory, getProjectCards, imageUrl } from '@/lib/sanity';
+import { CATEGORY_META, CONTACT_PATHS, GEORGE, SITE } from '@/lib/site';
 
 export default async function ProductsPage() {
-  const categoriesWithManufacturers = await getManufacturersByCategory();
+  const [categories, projects] = await Promise.all([
+    getManufacturersByCategory(),
+    getProjectCards(),
+  ]);
+
+  const categoryImages = buildCategoryImages(categories, projects);
+
+  const cards: ProductCategoryCard[] = categories.map((category) => {
+    const meta = CATEGORY_META[category.slug];
+    const cover = categoryImages[category.slug];
+
+    return {
+      slug: category.slug,
+      title: category.title,
+      blurb: meta?.blurb ?? '',
+      tags: meta?.tags ?? [],
+      groups: meta?.groups ?? [],
+      manufacturers: category.manufacturers.map((manufacturer) => ({
+        name: manufacturer.name.trim(),
+        website: manufacturer.website,
+      })),
+      image: imageUrl(cover?.image, 800, 600),
+      imageAlt: cover?.alt ?? category.title,
+    };
+  });
+
+  const fieldProjects = projects
+    .filter((project) => (project.manufacturers ?? []).length > 0)
+    .slice(0, 4);
 
   return (
-    <div className="flex flex-col w-full">
-      {/* Hero Section */}
-      <section className="w-full py-12 md:py-20 lg:py-28 relative overflow-hidden">
-        <div className="container mx-auto px-4">
-          <div className="max-w-[800px]">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4">
-              Our Product Lines
+    <>
+      {/* Hero */}
+      <section className="container-page pt-16 pb-14 md:pt-24">
+        <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-16">
+          <div>
+            <Eyebrow className="mb-[22px]">Product lines</Eyebrow>
+            <h1 className="text-[clamp(44px,5.4vw,78px)] leading-[0.96] tracking-[-0.035em]">
+              The materials that
+              <br />
+              finish a building,
+              <br />
+              <span className="text-ink-3">inside and out.</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-[700px]">
-              G. Davis & Associates represents industry-leading manufacturers in
-              various product categories.
+          </div>
+          <div className="flex flex-col gap-6">
+            <p className="max-w-[44ch] text-[18px] leading-[1.55] text-ink-2">
+              We represent established interior and exterior product lines for
+              design and construction teams across the central states, and we stay
+              involved from first sample through close-out.
             </p>
+            <div className="flex flex-wrap gap-2.5">
+              <a
+                href={`mailto:${GEORGE.email}?subject=${encodeURIComponent('Sample request')}`}
+                className="rounded-full bg-brand px-5 py-3 text-[14px] font-medium text-on-brand transition-[filter] hover:text-on-brand hover:brightness-110"
+              >
+                Get samples &amp; specs
+              </a>
+              <a
+                href={`mailto:${GEORGE.email}?subject=${encodeURIComponent('Continuing education presentation')}`}
+                className="rounded-full border border-line px-5 py-3 text-[14px] font-medium transition-colors hover:border-ink-3 hover:text-ink"
+              >
+                Schedule a presentation
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Product Categories */}
-      <section className="w-full pb-16 md:pb-24">
-        <div className="container mx-auto px-4">
-          <div className="space-y-16">
-            {categoriesWithManufacturers.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">
-                  No product categories found. Please add manufacturers with
-                  categories in Sanity Studio.
-                </p>
-              </div>
-            ) : (
-              categoriesWithManufacturers.map((category) => (
-                <div key={category.id} id={category.id}>
-                  <div className="mb-6">
-                    <h2 className="text-xl font-semibold tracking-tight mb-1">
-                      {category.title}
-                    </h2>
-                    {category.description && (
-                      <p className="text-sm text-muted-foreground">
-                        {category.description}
-                      </p>
-                    )}
-                  </div>
+      <Suspense
+        fallback={<div className="container-page h-[68px] border-y border-line" />}
+      >
+        <ProductCategoryGrid categories={cards} />
+      </Suspense>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                    {category.manufacturers.map((manufacturer) => {
-                      const CardWrapper = manufacturer.website ? 'a' : 'div';
-                      const cardProps = manufacturer.website
-                        ? {
-                            href: manufacturer.website,
-                            target: '_blank',
-                            rel: 'noopener noreferrer',
-                          }
-                        : {};
+      {/* Projects using these lines */}
+      <section className="container-page pt-[88px]">
+        <div className="mb-7 flex flex-wrap items-end justify-between gap-8">
+          <div>
+            <Eyebrow className="mb-3.5">Built with these lines</Eyebrow>
+            <h2 className="text-[clamp(30px,3.2vw,44px)] leading-[1.04] tracking-[-0.03em]">
+              Recent installations
+            </h2>
+          </div>
+          <Link href="/projects" className="link-more">
+            All projects →
+          </Link>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {fieldProjects.map((project, index) => (
+            <ProjectCard
+              key={project._id}
+              project={project}
+              aspect="3 / 4"
+              size="sm"
+              className="rv"
+              style={revealDelay(index)}
+            />
+          ))}
+        </div>
+      </section>
 
-                      return (
-                        <CardWrapper
-                          key={manufacturer._id}
-                          {...cardProps}
-                          className={`group relative bg-card border rounded-lg p-4 flex flex-col items-center justify-center aspect-[4/3] transition-all duration-200 ${
-                            manufacturer.website
-                              ? 'hover:border-primary hover:shadow-md cursor-pointer'
-                              : ''
-                          }`}
-                        >
-                          {manufacturer.logo ? (
-                            <Image
-                              src={urlFor(manufacturer.logo)
-                                .width(400)
-                                .fit('max')
-                                .url()}
-                              alt={manufacturer.name}
-                              width={160}
-                              height={80}
-                              className="object-contain max-h-[60px] w-auto transition-transform duration-200 group-hover:scale-105"
-                            />
-                          ) : (
-                            <span className="text-sm font-medium text-center">
-                              {manufacturer.name}
-                            </span>
-                          )}
-                          {manufacturer.website && (
-                            <ExternalLink className="absolute top-2 right-2 h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                          )}
-                        </CardWrapper>
-                      );
-                    })}
-                  </div>
+      {/* Named contact paths */}
+      <section id="talk" className="container-page pt-[88px] pb-24">
+        <div className="grid overflow-hidden rounded-md border border-line bg-surface lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+          <div className="flex flex-col gap-5 border-line p-8 md:p-11 lg:border-r">
+            <div className="flex items-center gap-4">
+              <ImageSlot
+                src={GEORGE.photo}
+                alt={GEORGE.name}
+                sizes="72px"
+                objectPosition="50% 20%"
+                className="h-[72px] w-[72px] flex-none rounded-full"
+              />
+              <div>
+                <div className="text-[19px] font-semibold tracking-[-0.015em]">
+                  {GEORGE.name}
                 </div>
-              ))
-            )}
+                <div className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-ink-3">
+                  Manufacturer&apos;s representative
+                </div>
+              </div>
+            </div>
+            <p className="text-[16px] leading-[1.55] text-ink-2">
+              Selecting the right architectural product should be a
+              straightforward part of your process. Reach out directly and you
+              will get a considered answer.
+            </p>
+            <div className="flex flex-col gap-1.5 text-[15px]">
+              <a href={GEORGE.phoneHref} className="font-medium hover:text-brand">
+                {GEORGE.phone}
+              </a>
+              <a
+                href={`mailto:${GEORGE.email}`}
+                className="text-ink-2 hover:text-brand"
+              >
+                {GEORGE.email}
+              </a>
+              <span className="text-[14px] text-ink-3">
+                {SITE.address.street}, {SITE.address.city}, {SITE.address.state}{' '}
+                {SITE.address.zip}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center gap-6 border-t border-line p-8 md:p-11 lg:border-t-0">
+            <h2 className="max-w-[24ch] text-[clamp(26px,2.6vw,36px)] leading-[1.06] tracking-[-0.03em]">
+              Samples, specifications, and continuing education.
+            </h2>
+            <div className="hairline-grid">
+              {CONTACT_PATHS.map((path) => (
+                <a
+                  key={path.subject}
+                  href={`mailto:${GEORGE.email}?subject=${encodeURIComponent(path.subject)}`}
+                  className="flex items-center justify-between gap-4 bg-surface px-5 py-4.5 transition-colors hover:bg-brand-soft hover:text-ink"
+                >
+                  <span>
+                    <span className="block text-[15.5px] font-semibold">
+                      {path.title}
+                    </span>
+                    <span className="mt-0.5 block text-[13.5px] text-ink-3">
+                      {path.detail}
+                    </span>
+                  </span>
+                  <span className="text-[18px] text-brand">→</span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
-      <CtaSection
-        title="Need Help Finding the Right Product?"
-        description="Our team of experts is ready to assist you in selecting the perfect products for your project."
-        secondaryButtonText="View Projects"
-        secondaryButtonLink="/projects"
-      />
-
-      <Separator />
-    </div>
+    </>
   );
 }

@@ -14,17 +14,17 @@ const components = {
         return null;
       }
       return (
-        <div className="relative w-full my-6 rounded-lg overflow-hidden">
+        <div className="relative my-8 w-full overflow-hidden rounded-sm">
           <figure>
             <Image
               src={urlFor(value).width(800).height(600).url()}
               alt={value.alt || 'Project image'}
               width={800}
               height={600}
-              className="object-cover rounded-lg"
+              className="h-auto w-full rounded-sm object-cover"
             />
             {value.caption && (
-              <figcaption className="mt-2 text-sm text-muted-foreground italic">
+              <figcaption className="mt-2 text-[13.5px] text-ink-3">
                 {value.caption}
               </figcaption>
             )}
@@ -49,7 +49,7 @@ const components = {
           href={value?.href || '#'}
           target={target}
           rel={target === '_blank' ? 'noopener noreferrer' : undefined}
-          className="text-primary hover:underline"
+          className="text-brand hover:underline"
         >
           {children}
         </Link>
@@ -58,30 +58,30 @@ const components = {
   },
   block: {
     h1: ({ children }: { children?: React.ReactNode }) => (
-      <h1 className="text-3xl md:text-4xl font-heading uppercase tracking-wide mt-8 mb-4">
+      <h1 className="mt-10 mb-4 text-[30px] leading-[1.06] tracking-[-0.03em] text-ink">
         {children}
       </h1>
     ),
     h2: ({ children }: { children?: React.ReactNode }) => (
-      <h2 className="text-2xl md:text-3xl font-heading uppercase tracking-wide mt-8 mb-4">
+      <h2 className="mt-10 mb-4 text-[26px] leading-[1.08] tracking-[-0.03em] text-ink">
         {children}
       </h2>
     ),
     h3: ({ children }: { children?: React.ReactNode }) => (
-      <h3 className="text-xl md:text-2xl font-heading uppercase tracking-wide mt-6 mb-3">
+      <h3 className="mt-8 mb-3 text-[21px] tracking-[-0.02em] text-ink">
         {children}
       </h3>
     ),
     h4: ({ children }: { children?: React.ReactNode }) => (
-      <h4 className="text-lg md:text-xl font-heading uppercase tracking-wide mt-4 mb-2">
+      <h4 className="mt-6 mb-2 text-[18px] tracking-[-0.02em] text-ink">
         {children}
       </h4>
     ),
     normal: ({ children }: { children?: React.ReactNode }) => (
-      <p className="mb-4 leading-relaxed">{children}</p>
+      <p className="mb-4 leading-[1.6]">{children}</p>
     ),
     blockquote: ({ children }: { children?: React.ReactNode }) => (
-      <blockquote className="border-l-4 border-primary pl-4 italic my-6">
+      <blockquote className="my-6 border-l-2 border-brand pl-4 text-ink">
         {children}
       </blockquote>
     ),
@@ -96,10 +96,10 @@ const components = {
   },
   listItem: {
     bullet: ({ children }: { children?: React.ReactNode }) => (
-      <li className="leading-relaxed">{children}</li>
+      <li className="leading-[1.6]">{children}</li>
     ),
     number: ({ children }: { children?: React.ReactNode }) => (
-      <li className="leading-relaxed">{children}</li>
+      <li className="leading-[1.6]">{children}</li>
     ),
   },
 };

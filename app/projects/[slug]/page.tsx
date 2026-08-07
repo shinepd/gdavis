@@ -1,25 +1,30 @@
 import { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { notFound } from 'next/navigation';
 
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import { getAllProjectSlugs, getProjectBySlug, urlFor } from '@/lib/sanity';
+import { CtaBand } from '@/components/cta-band';
+import { ImageSlot } from '@/components/image-slot';
 import { PortableText } from '@/components/portable-text';
-import { CtaSection } from '@/components/sections/cta-section';
+import { ProjectCard } from '@/components/project-card';
+import { revealDelay } from '@/lib/reveal';
+import { Eyebrow, MonoLabel } from '@/components/ui/eyebrow';
+import {
+  getAllProjectSlugs,
+  getProjectBySlug,
+  getProjectCards,
+  imageUrl,
+  urlFor,
+} from '@/lib/sanity';
+import { formatLocation } from '@/lib/site';
+import { cn } from '@/lib/utils';
 
-// Generate static paths for all projects
 export async function generateStaticParams() {
   const slugs = await getAllProjectSlugs();
 
-  return slugs.map((slug) => ({
-    slug,
-  }));
+  return slugs.map((slug) => ({ slug }));
 }
 
-// Generate metadata for each project page
 export async function generateMetadata({
   params,
 }: {
@@ -35,26 +40,23 @@ export async function generateMetadata({
     };
   }
 
-  // Create a description fallback
   let description =
-    'View details about this architectural project by G. Davis & Associates.';
+    'Project details from G. Davis & Associates, architectural product representation for design and construction teams.';
 
-  // Try to extract text from the first block
+  const firstBlock = project.description?.[0];
   if (
-    project.description &&
-    project.description[0] &&
-    typeof project.description[0] === 'object' &&
-    'children' in project.description[0] &&
-    Array.isArray(project.description[0].children) &&
-    project.description[0].children[0] &&
-    'text' in project.description[0].children[0]
+    firstBlock &&
+    typeof firstBlock === 'object' &&
+    'children' in firstBlock &&
+    Array.isArray(firstBlock.children) &&
+    firstBlock.children[0] &&
+    'text' in firstBlock.children[0]
   ) {
-    description =
-      (project.description[0].children[0].text as string) || description;
+    description = (firstBlock.children[0].text as string) || description;
   }
 
   return {
-    title: `${project.title} | G. Davis & Associates`,
+    title: `${project.title.trim()} | G. Davis & Associates`,
     description,
     openGraph: {
       images: project.coverImage
@@ -70,187 +72,180 @@ export default async function ProjectPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+  const [project, allProjects] = await Promise.all([
+    getProjectBySlug(slug),
+    getProjectCards(),
+  ]);
 
   if (!project) {
     notFound();
   }
 
-  const projectDate = project.projectDate
+  const completed = project.projectDate
     ? format(new Date(project.projectDate), 'MMMM yyyy')
     : '';
+  const manufacturerNames = (project.manufacturers ?? []).map((manufacturer) =>
+    manufacturer.name.trim()
+  );
+
+  // Other work using the same lines, so a visitor can keep browsing by material.
+  const related = allProjects
+    .filter(
+      (candidate) =>
+        candidate.slug.current !== slug &&
+        (candidate.manufacturers ?? []).some((manufacturer) =>
+          manufacturerNames.includes(manufacturer.name.trim())
+        )
+    )
+    .slice(0, 4);
+
+  const facts = [
+    { label: 'Location', value: formatLocation(project.location) },
+    { label: 'Completed', value: completed },
+    {
+      label: project.architects?.length === 1 ? 'Architect' : 'Architects',
+      value: (project.architects ?? [])
+        .map((architect) => architect.name.trim())
+        .join(', '),
+    },
+    { label: 'Manufacturers', value: manufacturerNames.join(', ') },
+  ].filter((fact) => fact.value);
+
+  const hasDescription = (project.description ?? []).length > 0;
 
   return (
-    <div className="flex flex-col w-full">
-      {/* Hero Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 relative overflow-hidden">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-12">
-            <div className="w-full lg:w-1/2 space-y-6">
-              <div>
-                <Link
-                  href="/projects"
-                  className="text-primary hover:underline inline-flex items-center mb-4"
-                >
-                  ← Back to Projects
-                </Link>
-                <h1 className="font-heading uppercase tracking-wide text-3xl md:text-4xl lg:text-5xl mb-2">
-                  {project.title}
-                </h1>
-                <div className="flex flex-wrap gap-2 mt-4 mb-6">
-                  {project.manufacturers?.map((manufacturer) => (
-                    <Badge key={manufacturer._id} variant="outline">
-                      {manufacturer.name}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
+    <>
+      {/* Hero */}
+      <section className="container-page pt-14 md:pt-20">
+        <Link href="/projects" className="link-more mb-8 text-ink-2">
+          ← All projects
+        </Link>
 
-              <div className="space-y-2">
-                {project.location && (
-                  <div className="flex items-start gap-2">
-                    <span className="font-medium">Location:</span>
-                    <span>{project.location}</span>
-                  </div>
-                )}
-                {projectDate && (
-                  <div className="flex items-start gap-2">
-                    <span className="font-medium">Completed:</span>
-                    <span>{projectDate}</span>
-                  </div>
-                )}
-                {project.architects.length > 0 && (
-                  <div className="flex items-start gap-2">
-                    <span className="font-medium">Architects:</span>
-                    <div>
-                      {project.architects.map((architect, index) => (
-                        <span key={architect._id}>
-                          {architect.name}
-                          {index < project.architects.length - 1 ? ', ' : ''}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="w-full lg:w-1/2 relative">
-              {project.coverImage && (
-                <div className="aspect-[4/3] relative w-full h-full rounded-lg overflow-hidden">
-                  <Image
-                    src={urlFor(project.coverImage)
-                      .width(800)
-                      .height(600)
-                      .url()}
-                    alt={project.title}
-                    width={800}
-                    height={600}
-                    className="object-cover w-full h-full rounded-lg"
-                    priority
-                  />
-                </div>
-              )}
-            </div>
+        <div className="mt-8 grid items-end gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-16">
+          <div>
+            <Eyebrow className="mb-[22px]">Project</Eyebrow>
+            <h1 className="text-[clamp(38px,4.6vw,68px)] leading-[0.98] tracking-[-0.035em]">
+              {project.title.trim()}
+            </h1>
           </div>
+          {manufacturerNames.length > 0 && (
+            <div className="font-mono text-[11px] uppercase tracking-[0.1em] text-brand">
+              {manufacturerNames.join(' · ')}
+            </div>
+          )}
         </div>
+
+        <ImageSlot
+          src={imageUrl(project.coverImage, 2100, 900)}
+          alt={project.title.trim()}
+          aspect="21 / 9"
+          caption="project photo"
+          sizes="(max-width: 1360px) 100vw, 1360px"
+          priority
+          large
+          className="mt-12"
+        />
       </section>
 
-      {/* Project Description */}
-      <section className="w-full py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto prose prose-lg">
-            {project.description && (
-              <PortableText value={project.description} />
+      {/* Facts + description. Many projects carry no write-up, so the facts
+          spread across the full width rather than leaving a dead column. */}
+      <section className="container-page pt-14">
+        <div
+          className={cn(
+            'grid gap-12',
+            hasDescription && 'lg:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)]'
+          )}
+        >
+          <dl
+            className={cn(
+              'grid',
+              hasDescription
+                ? 'grid-cols-1'
+                : 'gap-x-8 sm:grid-cols-2 lg:grid-cols-4'
             )}
-          </div>
+          >
+            {facts.map((fact) => (
+              <div
+                key={fact.label}
+                className="flex flex-col gap-1 border-t border-line py-4"
+              >
+                <dt>
+                  <MonoLabel>{fact.label}</MonoLabel>
+                </dt>
+                <dd className="text-[15.5px] text-ink">{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          {hasDescription && (
+            <div className="max-w-[68ch] text-[16.5px] leading-[1.6] text-ink-2">
+              <PortableText value={project.description} />
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Project Gallery */}
+      {/* Gallery */}
       {project.projectImages && project.projectImages.length > 0 && (
-        <section className="w-full py-12 md:py-16 bg-secondary/10">
-          <div className="container mx-auto px-4">
-            <h2 className="font-heading uppercase tracking-wide text-2xl md:text-3xl mb-8 text-center">
-              Project Gallery
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {project.projectImages.map((image, index) => (
-                <div
-                  key={index}
-                  className="aspect-[4/3] relative w-full rounded-lg overflow-hidden"
-                >
-                  <Image
-                    src={urlFor(image).width(600).height(450).url()}
-                    alt={image.alt || `${project.title} - Image ${index + 1}`}
-                    width={600}
-                    height={450}
-                    className="object-cover w-full h-full rounded-lg hover:scale-105 transition-transform duration-300"
-                  />
-                  {image.caption && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-2 text-white text-sm">
-                      {image.caption}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+        <section className="container-page pt-[88px]">
+          <h2 className="mb-7 text-[clamp(26px,2.6vw,36px)] leading-[1.06] tracking-[-0.03em]">
+            More from this project
+          </h2>
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(min(330px,100%),1fr))] gap-5">
+            {project.projectImages.map((image, index) => (
+              <figure
+                key={index}
+                className="rv flex flex-col gap-2.5"
+                style={revealDelay(index, 3)}
+              >
+                <ImageSlot
+                  src={imageUrl(image, 800, 600)}
+                  alt={image.alt || `${project.title.trim()} - image ${index + 1}`}
+                  aspect="4 / 3"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 340px"
+                />
+                {image.caption && (
+                  <figcaption className="text-[13.5px] text-ink-3">
+                    {image.caption}
+                  </figcaption>
+                )}
+              </figure>
+            ))}
           </div>
         </section>
       )}
 
-      {/* Manufacturers Used */}
-      <section className="w-full py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="font-heading uppercase tracking-wide text-2xl md:text-3xl mb-8 text-center">
-            Manufacturers Used in This Project
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {project.manufacturers?.map((manufacturer) => (
-              <div
-                key={manufacturer._id}
-                className="border rounded-lg p-4 hover:shadow-md transition-shadow"
-              >
-                {manufacturer.logo && (
-                  <div className="aspect-square relative w-full mb-4 rounded overflow-hidden">
-                    <Image
-                      src={urlFor(manufacturer.logo)
-                        .width(300)
-                        .height(300)
-                        .url()}
-                      alt={manufacturer.name}
-                      width={300}
-                      height={300}
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                )}
-                <h3 className="font-medium text-lg mb-1">
-                  {manufacturer.name}
-                </h3>
-                {manufacturer.category && (
-                  <Badge variant="secondary" className="mb-2">
-                    {manufacturer.category}
-                  </Badge>
-                )}
-                {manufacturer.description && (
-                  <p className="text-muted-foreground text-sm mt-2">
-                    {manufacturer.description}
-                  </p>
-                )}
-              </div>
+      {/* Related work */}
+      {related.length > 0 && (
+        <section className="container-page pt-[88px]">
+          <div className="mb-7 flex flex-wrap items-end justify-between gap-8">
+            <h2 className="text-[clamp(26px,2.6vw,36px)] leading-[1.06] tracking-[-0.03em]">
+              Built with the same lines
+            </h2>
+            <Link href="/projects" className="link-more">
+              All projects →
+            </Link>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {related.map((item, index) => (
+              <ProjectCard
+                key={item._id}
+                project={item}
+                size="sm"
+                className="rv"
+                style={revealDelay(index)}
+              />
             ))}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* CTA Section */}
-      <CtaSection
-        title="Interested in Using Similar Products?"
-        description="Contact us to discuss how we can help you with your next project using high-quality architectural products."
+      <CtaBand
+        title="Considering a similar assembly?"
+        description="We can provide samples, detailing support, and a preliminary budget for the same lines on your project."
+        primary={{ href: '/contact', label: 'Contact us' }}
+        secondary={{ href: '/products', label: 'Browse products' }}
       />
-
-      <Separator />
-    </div>
+    </>
   );
 }

@@ -1,73 +1,75 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 
-import { Separator } from '@/components/ui/separator';
-import { getPaginatedProjects, getProjectFilterOptions } from '@/lib/sanity';
-import { InfiniteProjectsList } from '@/components/infinite-projects-list';
-import { ProjectFilters } from '@/components/project-filters';
-import { CtaSection } from '@/components/sections/cta-section';
+import { CtaBand } from '@/components/cta-band';
+import { ProjectGrid } from '@/components/project-grid';
+import { Eyebrow } from '@/components/ui/eyebrow';
+import { getProjectCards } from '@/lib/sanity';
 
 export const metadata: Metadata = {
   title: 'Projects | G. Davis & Associates',
   description:
-    'Explore our showcase of projects featuring high-quality architectural products from G. Davis & Associates.',
+    'Aviation, education, civic, and healthcare work across Kansas, Missouri, Iowa, and Nebraska, finished with the product lines G. Davis & Associates represents.',
 };
 
-interface ProjectsPageProps {
-  searchParams: Promise<{ architect?: string; manufacturer?: string }>;
-}
+export default async function ProjectsPage() {
+  const projects = await getProjectCards();
 
-export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
-  const params = await searchParams;
-  const architectId = params.architect;
-  const manufacturerId = params.manufacturer;
+  // Chips come from the manufacturers that actually appear on a project,
+  // ordered by how much work each one has behind it.
+  const counts = new Map<string, { key: string; label: string; count: number }>();
+  for (const project of projects) {
+    for (const manufacturer of project.manufacturers ?? []) {
+      const key = manufacturer.slug?.current;
+      if (!key) continue;
 
-  // Fetch initial batch of projects with filters
-  const [{ projects, hasMore, total }, filterOptions] = await Promise.all([
-    getPaginatedProjects(0, 9, { architectId, manufacturerId }),
-    getProjectFilterOptions(),
-  ]);
+      const entry = counts.get(key);
+      if (entry) {
+        entry.count += 1;
+      } else {
+        counts.set(key, { key, label: manufacturer.name.trim(), count: 1 });
+      }
+    }
+  }
+
+  const manufacturers = Array.from(counts.values())
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
+    .map(({ key, label }) => ({ key, label }));
 
   return (
-    <div className="flex flex-col w-full">
-      {/* Projects Grid */}
-      <section className="w-full py-12 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="space-y-4 mb-12">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div>
-                <h2 className="font-heading uppercase tracking-wide text-3xl mb-2">
-                  Featured Projects
-                </h2>
-                <p className="text-muted-foreground max-w-[700px]">
-                  Browse our portfolio of projects where our products have been
-                  utilized.
-                </p>
-              </div>
-
-              <Suspense fallback={null}>
-                <ProjectFilters
-                  architects={filterOptions.architects}
-                  manufacturers={filterOptions.manufacturers}
-                />
-              </Suspense>
-            </div>
+    <>
+      <section className="container-page pt-16 pb-12 md:pt-24">
+        <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-16">
+          <div>
+            <Eyebrow className="mb-[22px]">Projects</Eyebrow>
+            <h1 className="text-[clamp(44px,5.4vw,78px)] leading-[0.96] tracking-[-0.035em]">
+              Our product lines,
+              <br />
+              installed and
+              <br />
+              <span className="text-ink-3">performing.</span>
+            </h1>
           </div>
-
-          <InfiniteProjectsList
-            initialProjects={projects}
-            initialHasMore={hasMore}
-            initialTotal={total}
-            architectId={architectId}
-            manufacturerId={manufacturerId}
-          />
+          <p className="max-w-[44ch] text-[18px] leading-[1.55] text-ink-2">
+            Aviation, education, civic, and healthcare work across Kansas,
+            Missouri, Iowa, and Nebraska. Filter by manufacturer to review a
+            product in place before specifying it.
+          </p>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <CtaSection />
+      <Suspense
+        fallback={<div className="container-page h-[68px] border-y border-line" />}
+      >
+        <ProjectGrid projects={projects} manufacturers={manufacturers} />
+      </Suspense>
 
-      <Separator />
-    </div>
+      <CtaBand
+        title="Review a project in person"
+        description="We can arrange a site visit or bring the same assembly to your office as a mockup for review."
+        primary={{ href: '/contact', label: 'Contact us' }}
+        secondary={{ href: '/products', label: 'Browse products' }}
+      />
+    </>
   );
 }

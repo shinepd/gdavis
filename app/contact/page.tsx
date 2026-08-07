@@ -1,13 +1,137 @@
-import { Separator } from '@/components/ui/separator';
-import { ContactHero } from '@/components/sections/contact-hero';
-import { ContactForm } from '@/components/sections/contact-form';
+import { ContactForm } from '@/components/contact-form';
+import { Eyebrow } from '@/components/ui/eyebrow';
+import { GEORGE, MADDIE, SITE } from '@/lib/site';
+
+const STEPS = [
+  'You share the design condition',
+  'We return suitable options with technical backup',
+  'Samples and details follow promptly',
+];
+
+// OpenStreetMap embed, keyed to the Leawood office. No API key, no tracking.
+const MAP_SRC =
+  'https://www.openstreetmap.org/export/embed.html?bbox=-94.6595%2C38.8935%2C-94.6295%2C38.9105&layer=mapnik&marker=38.9020%2C-94.6445';
 
 export default function ContactPage() {
+  const people = [
+    { eyebrow: 'Exteriors', person: GEORGE },
+    { eyebrow: 'Interiors', person: MADDIE },
+  ];
+
   return (
-    <div className="flex flex-col w-full">
-      <ContactHero />
-      <ContactForm />
-      <Separator />
-    </div>
+    <>
+      {/* Hero */}
+      <section className="container-page pt-16 pb-12 md:pt-24">
+        <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-16">
+          <div>
+            <Eyebrow className="mb-[22px]">Contact</Eyebrow>
+            <h1 className="text-[clamp(44px,5.4vw,78px)] leading-[0.96] tracking-[-0.035em]">
+              Direct access
+              <br />
+              to the people
+              <br />
+              <span className="text-ink-3">handling your project.</span>
+            </h1>
+          </div>
+          <p className="max-w-[44ch] text-[18px] leading-[1.55] text-ink-2">
+            Interior and exterior lines are handled by separate representatives.
+            Reach out for samples, specifications, preliminary budgets, or
+            continuing education sessions.
+          </p>
+        </div>
+      </section>
+
+      {/* Direct lines */}
+      <section className="container-page">
+        <div className="hairline-grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))]">
+          {people.map(({ eyebrow, person }) => (
+            <div
+              key={person.name}
+              className="rv flex flex-col gap-3.5 bg-surface px-[30px] py-[34px]"
+            >
+              <span className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-brand">
+                {eyebrow}
+              </span>
+              <div>
+                <div className="text-[21px] font-semibold tracking-[-0.02em]">
+                  {person.name}
+                </div>
+                <div className="mt-1 text-[14px] text-ink-3">
+                  {person.discipline}
+                </div>
+              </div>
+              <div className="mt-auto flex flex-col gap-1 pt-2 text-[15px]">
+                <a href={person.phoneHref} className="font-medium hover:text-brand">
+                  {person.phone}
+                </a>
+                <a
+                  href={`mailto:${person.email}`}
+                  className="text-ink-2 hover:text-brand"
+                >
+                  {person.email}
+                </a>
+              </div>
+            </div>
+          ))}
+
+          <div className="rv flex flex-col gap-3.5 bg-surface px-[30px] py-[34px]">
+            <span className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-brand">
+              Office
+            </span>
+            <div>
+              <div className="text-[21px] font-semibold leading-[1.2] tracking-[-0.02em]">
+                {SITE.address.street}
+              </div>
+              <div className="mt-1 text-[15px] text-ink-2">
+                {SITE.address.city}, {SITE.address.state} {SITE.address.zip}
+              </div>
+            </div>
+            <div className="mt-auto pt-2 text-[14px] text-ink-3">{SITE.hours}</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Form */}
+      <section className="container-page pt-14">
+        <div className="hairline-grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+          <div className="flex flex-col justify-center gap-5 bg-surface p-8 md:p-11">
+            <h2 className="max-w-[20ch] text-[clamp(26px,2.6vw,38px)] leading-[1.06] tracking-[-0.03em]">
+              Tell us about the project
+            </h2>
+            <p className="max-w-[42ch] text-[16px] leading-[1.55] text-ink-2">
+              An elevation, a specification section, or a brief description of
+              the condition you are working through is enough for us to begin.
+            </p>
+            {/* Accent dashes, not 01/02/03 - the handoff removed step
+                numbering across the site on purpose. */}
+            <div className="mt-2 flex flex-col gap-3">
+              {STEPS.map((step) => (
+                <div
+                  key={step}
+                  className="flex items-baseline gap-2.5 text-[15px]"
+                >
+                  <span className="text-brand">-</span>
+                  {step}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <ContactForm />
+        </div>
+      </section>
+
+      {/* Map */}
+      <section className="container-page pt-14 pb-24">
+        <div className="rv overflow-hidden rounded-md border border-line">
+          <iframe
+            title={`Map of the ${SITE.address.city}, ${SITE.address.state} office`}
+            src={MAP_SRC}
+            loading="lazy"
+            className="block aspect-[21/9] w-full border-0 md:aspect-[21/7]"
+          />
+        </div>
+      </section>
+    </>
   );
 }
