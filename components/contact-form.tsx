@@ -53,7 +53,7 @@ export function ContactForm() {
     if (!form.name.trim()) next.name = 'Name is required.';
     if (!form.email.trim()) next.email = 'Email is required.';
     else if (!EMAIL_PATTERN.test(form.email)) next.email = 'Enter a valid email address.';
-    if (!form.message.trim()) next.message = 'Tell us what you need.';
+    if (!form.message.trim()) next.message = 'Please describe what you need.';
 
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -99,11 +99,11 @@ export function ContactForm() {
           Message sent
         </span>
         <h3 className="max-w-[22ch] text-[26px] leading-[1.1] tracking-[-0.025em]">
-          Thanks - we&apos;ll come back to you shortly.
+          Thank you. We will respond shortly.
         </h3>
         <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink-2">
-          Samples and details usually follow within the week. If it&apos;s
-          urgent, call the rep for your scope directly.
+          Samples and details typically follow promptly. For time-sensitive
+          requests, contact the representative for your scope directly.
         </p>
         <button
           type="button"
@@ -181,7 +181,7 @@ export function ContactForm() {
               rows={5}
               value={form.message}
               onChange={(event) => update('message', event.target.value)}
-              placeholder="Project, product category, and what you're trying to solve."
+              placeholder="Project, product category, and the condition you are resolving."
               className={cn(inputClass, 'resize-y')}
             />
           }
@@ -219,8 +219,8 @@ export function ContactForm() {
 
         {status === 'error' && (
           <p className="text-[13.5px] text-brand sm:col-span-2">
-            Something went wrong sending that. Please try again, or email us
-            directly.
+            The message could not be sent. Please try again, or contact us by
+            email directly.
           </p>
         )}
       </form>

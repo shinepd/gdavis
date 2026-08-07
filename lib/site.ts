@@ -10,16 +10,29 @@
 export const SITE = {
   name: 'G. Davis & Associates',
   tagline:
-    "Finding the perfect architectural element shouldn't be the hardest part of your design.",
+    'Architectural product representation for design and construction teams across the central states.',
   address: {
     street: '12004 Pawnee Lane',
     city: 'Leawood',
     state: 'KS',
+    stateName: 'Kansas',
     zip: '66209',
   },
   hours: 'Mon–Fri, 8:00–5:00 CT',
-  territory: 'KS · MO · IA',
 } as const;
+
+/**
+ * The four-up strip on the home page. Per the handoff's voice notes, this
+ * describes capability rather than counting categories, manufacturers, or
+ * lines: numeric claims were removed on purpose during client review and
+ * should not be reintroduced, including via CMS-driven counts.
+ */
+export const CAPABILITIES = [
+  { label: 'Territory', lines: ['Kansas · Missouri', 'Iowa · Nebraska'] },
+  { label: 'Scope', lines: ['Interior and exterior', 'architectural systems'] },
+  { label: 'Support', lines: ['Specification through', 'installation'] },
+  { label: 'Sectors', lines: ['Aviation · Education', 'Healthcare · Civic'] },
+] as const;
 
 export const NAV_ITEMS = [
   { href: '/', label: 'Home' },
@@ -44,7 +57,7 @@ export const TEAM: TeamMember[] = [
   {
     name: 'George Davis',
     role: 'Founder · Exteriors',
-    discipline: 'Rainscreens, cladding, terracotta, metal',
+    discipline: 'Rainscreens, cladding, terracotta, and metal systems',
     phone: '(913) 231-8071',
     phoneHref: 'tel:9132318071',
     email: 'george@gdavisassociates.com',
@@ -53,7 +66,7 @@ export const TEAM: TeamMember[] = [
   {
     name: 'Maddie Shine',
     role: 'Sales · Interiors',
-    discipline: 'Ceilings, acoustics, wood and glass systems',
+    discipline: 'Ceilings, acoustics, wood, and glass systems',
     phone: '(913) 744-0191',
     phoneHref: 'tel:9137440191',
     email: 'maddie@gdavisassociates.com',
@@ -62,7 +75,7 @@ export const TEAM: TeamMember[] = [
   {
     name: 'Makensi McDonald',
     role: 'Marketing',
-    blurb: 'Lunch-and-learns, CEU scheduling, and sample logistics.',
+    blurb: 'Continuing education, presentations, and sample coordination.',
   },
 ];
 
@@ -83,7 +96,7 @@ export type ProductFilterKey = (typeof PRODUCT_FILTERS)[number]['key'];
 export interface CategoryMeta {
   /** Display title, overriding the slug-derived one. */
   title: string;
-  /** Two-line punchy description shown on the product card. */
+  /** Two-line description shown on the product card. */
   blurb: string;
   /** Application tags - Interior / Exterior / Ceiling / Wall / Soffit / Roof. */
   tags: string[];
@@ -96,70 +109,70 @@ export const CATEGORY_META: Record<string, CategoryMeta> = {
   'acoustical-ceilings': {
     title: 'Acoustical Ceilings',
     blurb:
-      'Quiet the open plan. PET felt systems that hit the NRC your consultant asked for without looking like a ceiling tile.',
+      'PET felt and acoustic systems that meet specified NRC targets while offering a broad range of finishes and formats.',
     tags: ['Interior', 'Ceiling', 'Wall'],
     groups: ['ceilings'],
   },
   'architectural-glass': {
     title: 'Architectural Glass',
     blurb:
-      'Daylight without sightlines. Channel and cast glass that divides space and still reads as one continuous plane.',
+      'Channel and cast glass that admits daylight while managing privacy, reading as a continuous translucent plane.',
     tags: ['Interior', 'Exterior', 'Wall'],
     groups: ['glass', 'facades'],
   },
   'composite-stone': {
     title: 'Composite Stone',
     blurb:
-      'The look of quarried stone at a fraction of the dead load - thin panels that keep your structural budget where you want it.',
+      'The appearance of quarried stone at substantially reduced weight, with thin panels that ease structural and attachment requirements.',
     tags: ['Interior', 'Exterior', 'Wall'],
     groups: ['facades', 'interiors'],
   },
   'metal-ceilings': {
     title: 'Metal Ceilings',
     blurb:
-      'Built for airports, labs, and kitchens. Wipe-down panels and access systems that survive the way a building is actually used.',
+      'Durable panel and access systems specified for aviation, laboratory, and healthcare environments where cleanability and access matter.',
     tags: ['Interior', 'Exterior soffit', 'Ceiling'],
     groups: ['ceilings'],
   },
   'metal-rainscreens-and-cladding': {
     title: 'Metal Rainscreens & Cladding',
     blurb:
-      'Crisp reveals, deep shadow lines, and a drained cavity behind them. Formed to your elevation, not to a catalog page.',
+      'Formed metal panels with precise reveals and shadow lines, engineered around a drained and ventilated cavity.',
     tags: ['Exterior', 'Wall'],
     groups: ['facades'],
   },
   'terracotta-rainscreens-and-cladding': {
     title: 'Terracotta Rainscreens & Cladding',
     blurb:
-      "Fired clay in the color you glazed it. Warm, breathable, and still on the building in fifty years.",
+      'Fired clay facade systems offering durable color, natural texture, and a long documented service life.',
     tags: ['Exterior', 'Wall', 'Roof'],
     groups: ['facades'],
   },
   'wood-ceilings-and-wall-panels': {
     title: 'Wood Ceilings & Wall Panels',
     blurb:
-      'The detail people photograph. Real veneer slat and linear systems with acoustic backing and a Class A rating.',
+      'Real veneer slat and linear systems available with acoustic backing and Class A fire ratings.',
     tags: ['Interior', 'Ceiling', 'Wall'],
     groups: ['ceilings', 'interiors'],
   },
   'wood-rainscreens': {
     title: 'Wood Rainscreens',
     blurb:
-      "Timber warmth that holds its finish. Ventilated facade panels engineered so the wood doesn't have to be a maintenance line item.",
+      'Ventilated wood facade panels engineered for finish stability and reduced long-term maintenance.',
     tags: ['Exterior', 'Wall', 'Soffit'],
     groups: ['facades'],
   },
   'concrete-rainscreens': {
     title: 'Concrete Rainscreens',
     blurb:
-      'Non-combustible facade panels with a raw, low-maintenance surface and serious weather performance.',
+      'Non-combustible facade panels offering a durable, low-maintenance surface and strong weather performance.',
     tags: ['Exterior', 'Wall'],
     groups: ['facades'],
   },
   'zinc-rainscreens-and-cladding': {
     title: 'Zinc Rainscreens & Cladding',
     blurb:
-      'A self-healing metal that earns its patina. Premium facades that keep improving after the punch list.',
+      'Zinc facade systems with self-healing properties and a patina that develops predictably over the service life.',
     tags: ['Exterior', 'Wall', 'Roof'],
     groups: ['facades'],
   },
@@ -177,7 +190,7 @@ export const HOME_CATEGORIES: HomeCategory[] = [
   {
     title: 'Ceilings',
     blurb:
-      'Acoustical, metal, and wood systems - sound control and a finished plane in one package.',
+      'Acoustical, metal, and wood systems that address sound performance and finish in a single assembly.',
     categorySlugs: [
       'acoustical-ceilings',
       'metal-ceilings',
@@ -188,14 +201,14 @@ export const HOME_CATEGORIES: HomeCategory[] = [
   {
     title: 'Architectural Glass',
     blurb:
-      'Channel and cast glass that brings in daylight and keeps sightlines out of it.',
+      'Channel and cast glass systems for daylighting, privacy, and translucent partitions.',
     categorySlugs: ['architectural-glass'],
     href: '/products?filter=glass',
   },
   {
     title: 'Rainscreens & Cladding',
     blurb:
-      'Metal, wood, terracotta, and stone facades with a drained, ventilated cavity behind them.',
+      'Metal, wood, terracotta, and stone facade systems built on drained and ventilated cavity design.',
     categorySlugs: [
       'metal-rainscreens-and-cladding',
       'terracotta-rainscreens-and-cladding',
@@ -206,7 +219,7 @@ export const HOME_CATEGORIES: HomeCategory[] = [
   {
     title: 'Natural Materials',
     blurb:
-      'Real wood, fired clay, and composite stone for biophilic work that still passes code.',
+      'Real wood, fired clay, and composite stone for projects where natural materials must also meet code.',
     categorySlugs: [
       'terracotta-rainscreens-and-cladding',
       'wood-ceilings-and-wall-panels',
@@ -217,14 +230,14 @@ export const HOME_CATEGORIES: HomeCategory[] = [
   {
     title: 'Metal Systems',
     blurb:
-      'Formed panels, soffits, and ceilings for the sharp reveals your elevation is drawn with.',
+      'Formed panels, soffits, and ceilings engineered to hold the reveals and tolerances shown on your elevations.',
     categorySlugs: ['metal-rainscreens-and-cladding', 'metal-ceilings'],
     href: '/products',
   },
   {
     title: 'Specialty Materials',
     blurb:
-      'Composite stone and engineered panels: unusual looks, ordinary maintenance budgets.',
+      'Composite stone and engineered panels that deliver distinctive finishes with predictable maintenance.',
     categorySlugs: ['composite-stone'],
     href: '/products?filter=interiors',
   },
@@ -234,18 +247,18 @@ export const HOME_CATEGORIES: HomeCategory[] = [
 export const CONTACT_PATHS = [
   {
     title: 'Request samples',
-    detail: 'Physical chips and finish boards, shipped to your studio',
+    detail: 'Material chips and finish boards sent to your office',
     subject: 'Sample request',
   },
   {
     title: 'Get spec & detail support',
-    detail: 'Sections, attachment details, and budget numbers',
+    detail: 'Sections, attachment details, and preliminary budgets',
     subject: 'Spec support',
   },
   {
-    title: 'Book a lunch-and-learn',
-    detail: 'We bring lunch and the samples to your office',
-    subject: 'Lunch-and-learn',
+    title: 'Schedule a presentation',
+    detail: 'Continuing education credit, presented at your office',
+    subject: 'Continuing education presentation',
   },
 ] as const;
 

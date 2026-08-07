@@ -10,24 +10,22 @@ import { TEAM } from '@/lib/site';
 export const metadata = {
   title: 'About Us | G. Davis & Associates',
   description:
-    "A manufacturer's representative firm bridging the gap between the people who make architectural products and the people who draw them into buildings.",
+    "A manufacturer's representative firm serving architects, contractors, and building owners across Kansas, Missouri, Iowa, and Nebraska.",
 };
 
+// Unnumbered by design: the handoff replaced the 01/02/03 sequence here.
 const VALUES = [
   {
-    number: '01',
-    title: 'Quality products',
-    body: "We only take on lines we'd be comfortable specifying ourselves - manufacturers who care about the detail as much as the order.",
+    title: 'Established product lines',
+    body: 'We represent manufacturers with a demonstrated record of quality and support, and we take on new lines selectively.',
   },
   {
-    number: '02',
-    title: 'Exceptional service',
-    body: 'From first sample through final punch list. The same person who brought the samples answers the shop drawing question.',
+    title: 'Consistent service',
+    body: 'From initial samples through submittals, shop drawings, and close-out, the same team stays with the project.',
   },
   {
-    number: '03',
     title: 'Technical expertise',
-    body: 'Attachment, movement, fire, acoustics, and cost. We give you the real constraint before it becomes an RFI.',
+    body: 'Attachment, movement, fire performance, acoustics, and budget are addressed early, so constraints are understood before they become RFIs.',
   },
 ];
 
@@ -43,17 +41,18 @@ export default async function AboutPage() {
           <div>
             <Eyebrow className="mb-[22px]">About</Eyebrow>
             <h1 className="text-[clamp(44px,5.4vw,78px)] leading-[0.96] tracking-[-0.035em]">
-              We know these products
+              A representative firm
               <br />
-              because we&apos;ve stood
+              built on judgment,
               <br />
-              <span className="text-ink-3">under them.</span>
+              <span className="text-ink-3">not catalogs.</span>
             </h1>
           </div>
           <p className="max-w-[44ch] text-[18px] leading-[1.55] text-ink-2">
-            A manufacturer&apos;s representative firm bridging the gap between the
-            people who make architectural products and the people who draw them
-            into buildings.
+            A manufacturer&apos;s representative firm serving architects,
+            contractors, and building owners across Kansas, Missouri, Iowa, and
+            Nebraska with established product lines and the technical support to
+            specify them well.
           </p>
         </div>
       </section>
@@ -64,18 +63,18 @@ export default async function AboutPage() {
           <div className="flex flex-col justify-center gap-5 bg-surface p-8 md:p-12">
             <Eyebrow>Our history</Eyebrow>
             <h2 className="max-w-[22ch] text-[clamp(26px,2.6vw,38px)] leading-[1.06] tracking-[-0.03em]">
-              Founded to close a gap
+              A long-held approach
             </h2>
             <p className="max-w-[48ch] text-[16px] leading-[1.6] text-ink-2">
-              Manufacturers had the products. Architects had the problems. What
-              was missing was someone who understood both well enough to
-              translate.
+              The firm was founded on a straightforward premise: design teams are
+              better served by a representative who understands both the product
+              and the assembly it lands in, and who can speak credibly to each.
             </p>
             <p className="max-w-[48ch] text-[16px] leading-[1.6] text-ink-2">
-              Over the years we&apos;ve built long relationships with leading
-              lines and become a trusted partner to architects, contractors, and
-              building owners across the region - while keeping the firm small
-              enough that you always talk to someone who knows your job.
+              Over the years we have built lasting relationships with respected
+              manufacturers and become a trusted partner to design and
+              construction teams throughout the region. Every project is handled
+              directly by someone familiar with its details.
             </p>
           </div>
           <ImageSlot
@@ -94,19 +93,16 @@ export default async function AboutPage() {
         <div className="mb-7">
           <Eyebrow className="mb-3.5">Mission &amp; values</Eyebrow>
           <h2 className="max-w-[26ch] text-[clamp(30px,3.4vw,48px)] leading-[1.02] tracking-[-0.032em]">
-            Three things we refuse to be casual about
+            How we work
           </h2>
         </div>
         <div className="hairline-grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))]">
           {VALUES.map((value, index) => (
             <div
-              key={value.number}
+              key={value.title}
               className="rv flex flex-col gap-3 bg-surface px-[30px] py-[34px]"
               style={revealDelay(index, 3)}
             >
-              <span className="font-mono text-[11px] tracking-[0.12em] text-brand">
-                {value.number}
-              </span>
               <h3 className="text-[21px] tracking-[-0.02em]">{value.title}</h3>
               <p className="text-[15px] leading-[1.55] text-ink-2">
                 {value.body}
@@ -122,7 +118,7 @@ export default async function AboutPage() {
           <div>
             <Eyebrow className="mb-3.5">Our team</Eyebrow>
             <h2 className="text-[clamp(30px,3.4vw,48px)] leading-[1.02] tracking-[-0.032em]">
-              The people you&apos;ll actually work with
+              Our team
             </h2>
           </div>
           <Link href="/contact" className="link-more">
@@ -174,7 +170,7 @@ export default async function AboutPage() {
 
       <CtaBand
         title="Get in touch"
-        description="Questions about a product, an assembly, or a budget number? Someone here has the answer."
+        description="For questions about a product, an assembly, or a preliminary budget, our team is available directly."
         primary={{ href: '/contact', label: 'Contact us' }}
       />
     </>

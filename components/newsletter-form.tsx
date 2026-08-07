@@ -33,7 +33,7 @@ export function NewsletterForm() {
   if (sent) {
     return (
       <p className="text-[14px] leading-[1.5] text-ink-2">
-        Thanks - finish sending the email we opened and you&apos;re on the list.
+        Send the email we opened and we will add you to the list.
       </p>
     );
   }

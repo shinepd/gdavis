@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Products | G. Davis & Associates',
   description:
-    'Explore our extensive range of high-quality architectural products for your design and construction needs.',
+    'Established interior and exterior product lines represented by G. Davis & Associates, with technical support from specification through installation.',
 };
 
 export default function ProductsLayout({

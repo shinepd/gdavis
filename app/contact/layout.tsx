@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Contact Us | G. Davis & Associates',
   description:
-    'Get in touch with G. Davis & Associates for information about our architectural products and services.',
+    'Interior and exterior lines are handled by separate representatives. Reach out for samples, specifications, preliminary budgets, or continuing education sessions.',
 };
 
 export default function ContactLayout({

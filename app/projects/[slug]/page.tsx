@@ -41,7 +41,7 @@ export async function generateMetadata({
   }
 
   let description =
-    'View details about this architectural project by G. Davis & Associates.';
+    'Project details from G. Davis & Associates, architectural product representation for design and construction teams.';
 
   const firstBlock = project.description?.[0];
   if (
@@ -241,8 +241,8 @@ export default async function ProjectPage({
       )}
 
       <CtaBand
-        title="Interested in a similar assembly?"
-        description="We'll pull the samples, the details, and a budget number for the same lines on your project."
+        title="Considering a similar assembly?"
+        description="We can provide samples, detailing support, and a preliminary budget for the same lines on your project."
         primary={{ href: '/contact', label: 'Contact us' }}
         secondary={{ href: '/products', label: 'Browse products' }}
       />

@@ -61,9 +61,9 @@ export default async function ProductsPage() {
           </div>
           <div className="flex flex-col gap-6">
             <p className="max-w-[44ch] text-[18px] leading-[1.55] text-ink-2">
-              We represent the ceiling, cladding, and facade lines architects in
-              the Midwest actually specify - and we stay on the job from first
-              sample to final punch list.
+              We represent established interior and exterior product lines for
+              design and construction teams across the central states, and we stay
+              involved from first sample through close-out.
             </p>
             <div className="flex flex-wrap gap-2.5">
               <a
@@ -73,10 +73,10 @@ export default async function ProductsPage() {
                 Get samples &amp; specs
               </a>
               <a
-                href={`mailto:${GEORGE.email}?subject=${encodeURIComponent('Lunch-and-learn')}`}
+                href={`mailto:${GEORGE.email}?subject=${encodeURIComponent('Continuing education presentation')}`}
                 className="rounded-full border border-line px-5 py-3 text-[14px] font-medium transition-colors hover:border-ink-3 hover:text-ink"
               >
-                Book a lunch-and-learn
+                Schedule a presentation
               </a>
             </div>
           </div>
@@ -95,7 +95,7 @@ export default async function ProductsPage() {
           <div>
             <Eyebrow className="mb-3.5">Built with these lines</Eyebrow>
             <h2 className="text-[clamp(30px,3.2vw,44px)] leading-[1.04] tracking-[-0.03em]">
-              See them in the field
+              Recent installations
             </h2>
           </div>
           <Link href="/projects" className="link-more">
@@ -138,9 +138,9 @@ export default async function ProductsPage() {
               </div>
             </div>
             <p className="text-[16px] leading-[1.55] text-ink-2">
-              Finding the right architectural element shouldn&apos;t be the
-              hardest part of your design. Call me - you&apos;ll get an answer,
-              not a form response.
+              Selecting the right architectural product should be a
+              straightforward part of your process. Reach out directly and you
+              will get a considered answer.
             </p>
             <div className="flex flex-col gap-1.5 text-[15px]">
               <a href={GEORGE.phoneHref} className="font-medium hover:text-brand">
@@ -161,7 +161,7 @@ export default async function ProductsPage() {
 
           <div className="flex flex-col justify-center gap-6 border-t border-line p-8 md:p-11 lg:border-t-0">
             <h2 className="max-w-[24ch] text-[clamp(26px,2.6vw,36px)] leading-[1.06] tracking-[-0.03em]">
-              Samples, specs, or an hour of CEU credit.
+              Samples, specifications, and continuing education.
             </h2>
             <div className="hairline-grid">
               {CONTACT_PATHS.map((path) => (

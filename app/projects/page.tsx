@@ -9,7 +9,7 @@ import { getProjectCards } from '@/lib/sanity';
 export const metadata: Metadata = {
   title: 'Projects | G. Davis & Associates',
   description:
-    'Airports, libraries, labs, and stadiums finished with the ceiling, cladding, and facade lines G. Davis & Associates represents.',
+    'Aviation, education, civic, and healthcare work across Kansas, Missouri, Iowa, and Nebraska, finished with the product lines G. Davis & Associates represents.',
 };
 
 export default async function ProjectsPage() {
@@ -43,17 +43,17 @@ export default async function ProjectsPage() {
           <div>
             <Eyebrow className="mb-[22px]">Projects</Eyebrow>
             <h1 className="text-[clamp(44px,5.4vw,78px)] leading-[0.96] tracking-[-0.035em]">
-              Buildings that
+              Our product lines,
               <br />
-              already have
+              installed and
               <br />
-              <span className="text-ink-3">our lines on them.</span>
+              <span className="text-ink-3">performing.</span>
             </h1>
           </div>
           <p className="max-w-[44ch] text-[18px] leading-[1.55] text-ink-2">
-            Airports, libraries, labs, and stadiums across Kansas, Missouri, and
-            Iowa. Filter by manufacturer to see a product in the field before you
-            spec it.
+            Aviation, education, civic, and healthcare work across Kansas,
+            Missouri, Iowa, and Nebraska. Filter by manufacturer to review a
+            product in place before specifying it.
           </p>
         </div>
       </section>
@@ -65,8 +65,8 @@ export default async function ProjectsPage() {
       </Suspense>
 
       <CtaBand
-        title="Want to walk one of these?"
-        description="We'll arrange a site visit or bring the same assembly to your office as a mockup."
+        title="Review a project in person"
+        description="We can arrange a site visit or bring the same assembly to your office as a mockup for review."
         primary={{ href: '/contact', label: 'Contact us' }}
         secondary={{ href: '/products', label: 'Browse products' }}
       />

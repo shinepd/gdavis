@@ -24,7 +24,7 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: 'G. Davis & Associates | Architectural Products',
   description:
-    "G. Davis & Associates is a manufacturer's representative firm for ceilings, rainscreens, cladding, and architectural glass across Kansas, Missouri, and Iowa.",
+    "G. Davis & Associates is a manufacturer's representative firm for interior and exterior architectural products, serving design and construction teams across Kansas, Missouri, Iowa, and Nebraska.",
   keywords: [
     'architectural products',
     "manufacturer's representative",

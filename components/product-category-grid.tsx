@@ -111,20 +111,21 @@ export function ProductCategoryGrid({
           {/* Promo tile - always visible, and excluded from the counter. */}
           <article className="flex flex-col justify-center gap-4 bg-brand px-[26px] py-[30px] text-on-brand">
             <span className="font-mono text-[10.5px] uppercase tracking-[0.14em] opacity-80">
-              Not listed?
+              Other requirements
             </span>
             <h2 className="max-w-[20ch] text-[26px] leading-[1.1] tracking-[-0.025em]">
-              If it goes on a ceiling or a facade, we probably know who makes it.
+              If a product falls outside these categories, we can likely source
+              it.
             </h2>
             <p className="max-w-[34ch] text-[14.5px] leading-[1.5] opacity-90">
-              Send us the elevation or the spec section and we&apos;ll come back
-              with two or three options that will actually hold the schedule.
+              Send an elevation or specification section and we will return
+              suitable options along with availability and lead time.
             </p>
             <Link
               href="#talk"
               className="mt-1 self-start rounded-full bg-surface px-[18px] py-2.5 text-[14px] font-semibold text-ink transition-opacity hover:text-ink hover:opacity-90"
             >
-              Ask George →
+              Get in touch →
             </Link>
           </article>
         </div>

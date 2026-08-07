@@ -3,9 +3,9 @@ import { Eyebrow } from '@/components/ui/eyebrow';
 import { GEORGE, MADDIE, SITE } from '@/lib/site';
 
 const STEPS = [
-  'You send the problem',
-  'We come back with two or three options',
-  'Samples and details follow within the week',
+  'You share the design condition',
+  'We return suitable options with technical backup',
+  'Samples and details follow promptly',
 ];
 
 // OpenStreetMap embed, keyed to the Leawood office. No API key, no tracking.
@@ -26,17 +26,17 @@ export default function ContactPage() {
           <div>
             <Eyebrow className="mb-[22px]">Contact</Eyebrow>
             <h1 className="text-[clamp(44px,5.4vw,78px)] leading-[0.96] tracking-[-0.035em]">
-              Call the person
+              Direct access
               <br />
-              who knows
+              to the people
               <br />
-              <span className="text-ink-3">the answer.</span>
+              <span className="text-ink-3">handling your project.</span>
             </h1>
           </div>
           <p className="max-w-[44ch] text-[18px] leading-[1.55] text-ink-2">
-            Exteriors and interiors are split between two reps, so you skip the
-            switchboard. Samples, specs, budget numbers, or a lunch-and-learn -
-            start here.
+            Interior and exterior lines are handled by separate representatives.
+            Reach out for samples, specifications, preliminary budgets, or
+            continuing education sessions.
           </p>
         </div>
       </section>
@@ -96,22 +96,21 @@ export default function ContactPage() {
         <div className="hairline-grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
           <div className="flex flex-col justify-center gap-5 bg-surface p-8 md:p-11">
             <h2 className="max-w-[20ch] text-[clamp(26px,2.6vw,38px)] leading-[1.06] tracking-[-0.03em]">
-              Tell us what you&apos;re drawing
+              Tell us about the project
             </h2>
             <p className="max-w-[42ch] text-[16px] leading-[1.55] text-ink-2">
-              Attach nothing, or attach everything. An elevation, a spec section,
-              or one sentence about the look you&apos;re after is enough to get
-              started.
+              An elevation, a specification section, or a brief description of
+              the condition you are working through is enough for us to begin.
             </p>
+            {/* Accent dashes, not 01/02/03 - the handoff removed step
+                numbering across the site on purpose. */}
             <div className="mt-2 flex flex-col gap-3">
-              {STEPS.map((step, index) => (
+              {STEPS.map((step) => (
                 <div
                   key={step}
                   className="flex items-baseline gap-2.5 text-[15px]"
                 >
-                  <span className="font-mono text-brand">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
+                  <span className="text-brand">-</span>
                   {step}
                 </div>
               ))}
