@@ -200,6 +200,24 @@ export const MANUFACTURER_SUBLINES: Record<string, string> = {
   'parklex-prodema': 'Wood rainscreens',
 };
 
+/**
+ * Local logo files that override what Sanity holds, keyed by manufacturer slug.
+ *
+ * These three were supplied to Sanity as opaque JPEGs or a flat PNG, so they
+ * rendered as a visible box inside the logo plate. The replacements are the
+ * manufacturers' own marks with real transparency, taken from their sites.
+ * Lindner only publishes a white monochrome SVG, so it is recoloured to dark
+ * ink for the light plate - solid-colour reproduction their brand permits.
+ *
+ * This map should shrink to nothing: upload the better files to Sanity and
+ * delete the entry. Anything not listed here uses the Sanity asset.
+ */
+export const LOGO_OVERRIDES: Record<string, string> = {
+  'millennium-forms': '/images/logos/millennium-forms.png',
+  'tekko-metals': '/images/logos/tekko-metals.png',
+  lindner: '/images/logos/lindner.svg',
+};
+
 /** The six grouped category cards on the home page, mapped to Sanity categories. */
 export interface HomeCategory {
   title: string;

@@ -22,7 +22,7 @@
   --accent-soft: oklch(94% 0.03 45);
   --swatch: oklch(92% 0.01 75);
   --swatch-2: oklch(88% 0.012 75);
-  --logo-plate: oklch(97% 0 0);
+  --logo-plate: oklch(100% 0 0);
 }
 
 html[data-theme='dark'],
@@ -36,12 +36,14 @@ html[data-theme='dark'],
   --accent: oklch(72% 0.12 45);
   --on-accent: oklch(20% 0.012 250);
   --accent-soft: oklch(30% 0.03 45);
-  /* Manufacturer logos are supplied as a mix of opaque JPEGs and dark-ink
-     transparent PNGs, so neither theme can show them raw. They sit on a light
-     plate in both themes instead - the same value deliberately. */
+  /* Manufacturer logos are a mix of opaque files and dark-ink transparent
+     ones, so neither theme can show them raw. They sit on a plate in both
+     themes instead, the same value deliberately. Pure white so the logos that
+     still carry a baked-in white background blend into it seamlessly rather
+     than reading as a box inside a box. */
   --swatch: oklch(29% 0.014 250);
   --swatch-2: oklch(33% 0.016 250);
-  --logo-plate: oklch(97% 0 0);
+  --logo-plate: oklch(100% 0 0);
 }
 
 @theme inline {

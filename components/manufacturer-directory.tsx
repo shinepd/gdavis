@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import { Eyebrow } from '@/components/ui/eyebrow';
 import { imageUrl, type ManufacturerCategory } from '@/lib/sanity';
-import { MANUFACTURER_SUBLINES } from '@/lib/site';
+import { LOGO_OVERRIDES, MANUFACTURER_SUBLINES } from '@/lib/site';
 
 /**
  * The roster of represented lines, above the category filter on Products.
@@ -21,15 +21,21 @@ export function ManufacturerDirectory({
   categories: ManufacturerCategory[];
 }) {
   const entries = categories.flatMap((category) =>
-    category.manufacturers.map((manufacturer) => ({
-      id: manufacturer._id,
-      name: manufacturer.name.trim(),
-      website: manufacturer.website,
-      logo: imageUrl(manufacturer.logo, 400),
-      subline:
-        MANUFACTURER_SUBLINES[manufacturer.slug?.current ?? ''] ??
-        category.title,
-    }))
+    category.manufacturers.map((manufacturer) => {
+      const slug = manufacturer.slug?.current ?? '';
+      const override = LOGO_OVERRIDES[slug];
+
+      return {
+        id: manufacturer._id,
+        name: manufacturer.name.trim(),
+        website: manufacturer.website,
+        logo: override ?? imageUrl(manufacturer.logo, 400),
+        // Local overrides are already sized and include an SVG, which the
+        // image optimizer would need extra configuration to serve.
+        unoptimized: Boolean(override),
+        subline: MANUFACTURER_SUBLINES[slug] ?? category.title,
+      };
+    })
   );
 
   if (entries.length === 0) return null;
@@ -64,6 +70,7 @@ export function ManufacturerDirectory({
                     alt={`${entry.name} logo`}
                     fill
                     sizes="200px"
+                    unoptimized={entry.unoptimized}
                     className="object-contain object-left p-1"
                   />
                 )}
