@@ -31,7 +31,7 @@ export const CAPABILITIES = [
   { label: 'Territory', lines: ['Kansas · Missouri', 'Iowa · Nebraska'] },
   { label: 'Scope', lines: ['Interior and exterior', 'architectural systems'] },
   { label: 'Support', lines: ['Specification through', 'installation'] },
-  { label: 'Sectors', lines: ['Aviation · Education', 'Healthcare · Civic'] },
+  { label: 'Sectors', lines: ['Sports · Aviation', 'Education · Civic'] },
 ] as const;
 
 export const NAV_ITEMS = [

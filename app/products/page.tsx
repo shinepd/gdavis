@@ -9,17 +9,30 @@ import {
 } from '@/components/product-category-grid';
 import { revealDelay } from '@/lib/reveal';
 import { Eyebrow } from '@/components/ui/eyebrow';
-import { buildCategoryImages } from '@/lib/category-images';
-import { getManufacturersByCategory, getProjectCards, imageUrl } from '@/lib/sanity';
+import { assignPhotos } from '@/lib/category-images';
+import {
+  getCategoryPhotoSources,
+  getManufacturersByCategory,
+  getProjectCards,
+  imageUrl,
+} from '@/lib/sanity';
 import { CATEGORY_META, CONTACT_PATHS, GEORGE, SITE } from '@/lib/site';
 
 export default async function ProductsPage() {
-  const [categories, projects] = await Promise.all([
+  const [categories, projects, photoSources] = await Promise.all([
     getManufacturersByCategory(),
     getProjectCards(),
+    getCategoryPhotoSources(),
   ]);
 
-  const categoryImages = buildCategoryImages(categories, projects);
+  const categoryImages = assignPhotos(
+    categories.map((category) => ({
+      key: category.slug,
+      label: category.title,
+      sources: photoSources[category.slug] ?? [],
+    })),
+    projects
+  );
 
   const cards: ProductCategoryCard[] = categories.map((category) => {
     const meta = CATEGORY_META[category.slug];

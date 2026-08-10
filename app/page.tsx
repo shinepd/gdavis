@@ -5,8 +5,13 @@ import { ImageSlot } from '@/components/image-slot';
 import { ProjectCard } from '@/components/project-card';
 import { revealDelay } from '@/lib/reveal';
 import { Eyebrow, MonoLabel } from '@/components/ui/eyebrow';
-import { buildCategoryImages } from '@/lib/category-images';
-import { getManufacturersByCategory, getProjectCards, imageUrl } from '@/lib/sanity';
+import { assignPhotos, sourcesForGroup } from '@/lib/category-images';
+import {
+  getCategoryPhotoSources,
+  getManufacturersByCategory,
+  getProjectCards,
+  imageUrl,
+} from '@/lib/sanity';
 import { CAPABILITIES, HOME_CATEGORIES, SITE } from '@/lib/site';
 
 const VALUE_POINTS = [
@@ -17,12 +22,11 @@ const VALUE_POINTS = [
 ];
 
 export default async function Home() {
-  const [categories, projects] = await Promise.all([
+  const [categories, projects, photoSources] = await Promise.all([
     getManufacturersByCategory(),
     getProjectCards(),
+    getCategoryPhotoSources(),
   ]);
-
-  const categoryImages = buildCategoryImages(categories, projects);
 
   const heroProject = projects.find((project) => project.coverImage);
   const recentProjects = projects.slice(0, 4);
@@ -31,17 +35,16 @@ export default async function Home() {
     (project) => project.coverImage && project._id !== heroProject?._id
   );
 
-  // The six home cards each draw from several product categories; claim a
-  // distinct photo per card so neighbouring tiles never show the same building.
-  const claimed = new Set<string>();
-  const homeCovers = HOME_CATEGORIES.map((group) => {
-    const cover = group.categorySlugs
-      .map((slug) => categoryImages[slug])
-      .find((entry) => entry?.image && !claimed.has(entry.alt));
-
-    if (cover) claimed.add(cover.alt);
-    return cover;
-  });
+  // Each home card spans several product categories, so it draws from the
+  // combined pool of projects using any of their manufacturers.
+  const homeCovers = assignPhotos(
+    HOME_CATEGORIES.map((group) => ({
+      key: group.title,
+      label: group.title,
+      sources: sourcesForGroup(group.categorySlugs, photoSources),
+    })),
+    projects
+  );
 
   return (
     <>
@@ -138,7 +141,7 @@ export default async function Home() {
                   ?.manufacturers.map((manufacturer) => manufacturer.name.trim()) ??
                 []
             );
-            const cover = homeCovers[index];
+            const cover = homeCovers[group.title];
 
             return (
               <Link

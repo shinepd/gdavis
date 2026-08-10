@@ -1,44 +1,85 @@
-import type { ManufacturerCategory, ProjectCardData, SanityImage } from '@/lib/sanity';
+import type { ProjectCardData, SanityImage } from '@/lib/sanity';
+
+export interface CategoryPhoto {
+  image?: SanityImage;
+  alt: string;
+}
+
+interface Bucket {
+  /** Key the caller will look the result up by. */
+  key: string;
+  /** Human label, used to build the alt text. */
+  label: string;
+  /** Manufacturer names whose projects can represent this bucket. */
+  sources: string[];
+}
 
 /**
- * Sanity does not carry a photo per product category, so each category borrows
- * the cover shot of the most recent project that used one of its manufacturers.
- * That keeps the product grid on real, relevant work instead of placeholders.
+ * Sanity carries no photo per product category, so each one borrows the cover
+ * of a project that used one of its manufacturers. That keeps the grids on real
+ * work instead of placeholders.
+ *
+ * Allocation runs scarcity-first: buckets with the fewest candidate projects
+ * choose before buckets spoiled for choice. A naive first-come pass strands the
+ * narrow categories, because a project like LifeServe Blood Center qualifies for
+ * several buckets and the first one to run would take it. Acoustical Ceilings
+ * has exactly one candidate in the whole dataset, so it has to pick first.
+ *
+ * Within a bucket, projects are already newest-first. An unclaimed project is
+ * always preferred so neighbouring cards don't repeat a building, but a claimed
+ * one is reused rather than falling back to a placeholder.
  */
-export function buildCategoryImages(
-  categories: ManufacturerCategory[],
+export function assignPhotos(
+  buckets: Bucket[],
   projects: ProjectCardData[]
-): Record<string, { image?: SanityImage; alt: string }> {
-  const used = new Set<string>();
-  const result: Record<string, { image?: SanityImage; alt: string }> = {};
-
-  for (const category of categories) {
-    const names = new Set(
-      category.manufacturers.map((manufacturer) => manufacturer.name.trim())
-    );
-
-    // Prefer a project not already claimed by another category so the grid
-    // doesn't repeat the same photo; fall back to the best match if it must.
-    const matches = projects.filter(
+): Record<string, CategoryPhoto> {
+  const candidatesFor = (sources: string[]) => {
+    const names = new Set(sources.map((source) => source.trim()));
+    return projects.filter(
       (project) =>
         project.coverImage &&
         (project.manufacturers ?? []).some((manufacturer) =>
           names.has(manufacturer.name.trim())
         )
     );
+  };
 
-    const project = matches.find((match) => !used.has(match._id)) ?? matches[0];
+  const pools = new Map(
+    buckets.map((bucket) => [bucket.key, candidatesFor(bucket.sources)])
+  );
+
+  const claimed = new Set<string>();
+  const result: Record<string, CategoryPhoto> = {};
+
+  const order = [...buckets].sort(
+    (a, b) => (pools.get(a.key)?.length ?? 0) - (pools.get(b.key)?.length ?? 0)
+  );
+
+  for (const bucket of order) {
+    const pool = pools.get(bucket.key) ?? [];
+    const project =
+      pool.find((candidate) => !claimed.has(candidate._id)) ?? pool[0];
 
     if (project) {
-      used.add(project._id);
-      result[category.slug] = {
+      claimed.add(project._id);
+      result[bucket.key] = {
         image: project.coverImage,
-        alt: `${category.title} - ${project.title.trim()}`,
+        alt: `${bucket.label} - ${project.title.trim()}`,
       };
     } else {
-      result[category.slug] = { alt: category.title };
+      result[bucket.key] = { alt: bucket.label };
     }
   }
 
   return result;
+}
+
+/** Collapses several categories' manufacturer lists into one source list. */
+export function sourcesForGroup(
+  categorySlugs: string[],
+  photoSources: Record<string, string[]>
+): string[] {
+  return Array.from(
+    new Set(categorySlugs.flatMap((slug) => photoSources[slug] ?? []))
+  );
 }

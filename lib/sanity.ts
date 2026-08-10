@@ -419,6 +419,38 @@ export async function getManufacturersByCategory(): Promise<
   })).sort((a, b) => a.title.localeCompare(b.title));
 }
 
+/**
+ * Every manufacturer name grouped by category, regardless of status.
+ *
+ * Used only to source representative photography: a building genuinely has a
+ * discontinued line installed in it, so a past manufacturer's project is a fair
+ * photo for that category even though the card lists current lines only. This
+ * is what keeps Acoustical Ceilings from falling back to a placeholder, since
+ * its one current manufacturer has no projects yet.
+ */
+export async function getCategoryPhotoSources(): Promise<
+  Record<string, string[]>
+> {
+  const manufacturers: { name: string; category: string }[] = await client.fetch(`
+    *[_type == "manufacturer" && defined(category)] {
+      name,
+      category
+    }
+  `);
+
+  const sources: Record<string, string[]> = {};
+  for (const manufacturer of manufacturers) {
+    const name = manufacturer.name.trim();
+    if (!name) continue;
+    sources[manufacturer.category] = [
+      ...(sources[manufacturer.category] ?? []),
+      name,
+    ];
+  }
+
+  return sources;
+}
+
 function titleFromSlug(slug: string): string {
   return slug
     .split('-')
