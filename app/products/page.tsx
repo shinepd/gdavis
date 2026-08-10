@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 
 import { ImageSlot } from '@/components/image-slot';
+import { ManufacturerDirectory } from '@/components/manufacturer-directory';
 import { ProjectCard } from '@/components/project-card';
 import {
   ProductCategoryGrid,
@@ -60,7 +61,7 @@ export default async function ProductsPage() {
   return (
     <>
       {/* Hero */}
-      <section className="container-page pt-16 pb-14 md:pt-24">
+      <section className="container-page pt-16 pb-16 md:pt-24">
         <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-16">
           <div>
             <Eyebrow className="mb-[22px]">Product lines</Eyebrow>
@@ -96,11 +97,17 @@ export default async function ProductsPage() {
         </div>
       </section>
 
-      <Suspense
-        fallback={<div className="container-page h-[68px] border-y border-line" />}
-      >
-        <ProductCategoryGrid categories={cards} />
-      </Suspense>
+      <ManufacturerDirectory categories={categories} />
+
+      <div className="pt-14">
+        <Suspense
+          fallback={
+            <div className="container-page h-[68px] border-y border-line" />
+          }
+        >
+          <ProductCategoryGrid categories={cards} />
+        </Suspense>
+      </div>
 
       {/* Projects using these lines */}
       <section className="container-page pt-[88px]">

@@ -178,6 +178,28 @@ export const CATEGORY_META: Record<string, CategoryMeta> = {
   },
 };
 
+/**
+ * One-line descriptor under each manufacturer in the "Represented lines"
+ * directory, keyed by Sanity slug. Anything absent falls back to its category
+ * title, so a newly added manufacturer still reads sensibly.
+ */
+export const MANUFACTURER_SUBLINES: Record<string, string> = {
+  'sky-acoustics': 'Acoustic ceilings & walls',
+  autex: 'Acoustic ceilings & walls',
+  bendheim: 'Architectural glass',
+  gammastone: 'Composite stone panels',
+  nordic: 'Fiber cement panels',
+  petrarch: 'Composite stone rainscreens',
+  gordon: 'Metal ceilings & soffits',
+  lindner: 'Metal ceiling systems',
+  'millennium-forms': 'Formed metal panels',
+  'tekko-metals': 'Metal rainscreens',
+  argeton: 'Terracotta facades',
+  ludowici: 'Terracotta roof & wall',
+  linea: 'Wood ceilings & wall panels',
+  'parklex-prodema': 'Wood rainscreens',
+};
+
 /** The six grouped category cards on the home page, mapped to Sanity categories. */
 export interface HomeCategory {
   title: string;

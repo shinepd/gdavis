@@ -22,6 +22,7 @@
   --accent-soft: oklch(94% 0.03 45);
   --swatch: oklch(92% 0.01 75);
   --swatch-2: oklch(88% 0.012 75);
+  --logo-plate: oklch(97% 0 0);
 }
 
 html[data-theme='dark'],
@@ -35,8 +36,12 @@ html[data-theme='dark'],
   --accent: oklch(72% 0.12 45);
   --on-accent: oklch(20% 0.012 250);
   --accent-soft: oklch(30% 0.03 45);
+  /* Manufacturer logos are supplied as a mix of opaque JPEGs and dark-ink
+     transparent PNGs, so neither theme can show them raw. They sit on a light
+     plate in both themes instead - the same value deliberately. */
   --swatch: oklch(29% 0.014 250);
   --swatch-2: oklch(33% 0.016 250);
+  --logo-plate: oklch(97% 0 0);
 }
 
 @theme inline {
@@ -56,6 +61,7 @@ html[data-theme='dark'],
   --color-on-brand: var(--on-accent);
   --color-swatch: var(--swatch);
   --color-swatch-2: var(--swatch-2);
+  --color-logo-plate: var(--logo-plate);
 
   /* shadcn/ui primitives, remapped onto the design palette. */
   --color-background: var(--bg);
@@ -170,14 +176,29 @@ html[data-theme='dark'],
     );
   }
 
-  /* Hairline grid: a 1px gap over --line reads as a shared rule between cards. */
+  /*
+   * Hairline grid. Each cell draws its own rules into the 1px gap, so adjacent
+   * cells share a single rule and the container clips the outermost ones.
+   *
+   * The rules deliberately belong to the cells, not the container. Painting
+   * --line on the container was the first approach, and it shows through as a
+   * solid slab wherever the last row is partly filled - which happens on any
+   * card count that doesn't divide evenly into the current column count, most
+   * visibly on a filtered product grid.
+   */
   .hairline-grid {
     display: grid;
     gap: 1px;
-    background: var(--line);
+    background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 4px;
     overflow: hidden;
+  }
+
+  .hairline-grid > * {
+    box-shadow:
+      1px 0 0 var(--line),
+      0 1px 0 var(--line);
   }
 
   /* Underlined "more" link. */
