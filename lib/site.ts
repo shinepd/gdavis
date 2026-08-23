@@ -113,12 +113,26 @@ export const CATEGORY_META: Record<string, CategoryMeta> = {
     tags: ['Interior', 'Ceiling', 'Wall'],
     groups: ['ceilings'],
   },
+  'aluminum-cladding-and-shading': {
+    title: 'Aluminum Cladding & Shading',
+    blurb:
+      'Extruded aluminum battens and panels for cladding, soffits, and solar shading, finished in realistic woodgrain or RAL color.',
+    tags: ['Exterior', 'Wall', 'Soffit'],
+    groups: ['facades'],
+  },
   'architectural-glass': {
     title: 'Architectural Glass',
     blurb:
       'Channel and cast glass that admits daylight while managing privacy, reading as a continuous translucent plane.',
     tags: ['Interior', 'Exterior', 'Wall'],
     groups: ['glass', 'facades'],
+  },
+  'architectural-wire-mesh': {
+    title: 'Architectural Wire Mesh',
+    blurb:
+      'Woven stainless steel mesh carried on tensioned attachment hardware, used for facades, solar screening, and interior partitions.',
+    tags: ['Interior', 'Exterior', 'Wall'],
+    groups: ['facades', 'interiors'],
   },
   'composite-stone': {
     title: 'Composite Stone',
@@ -140,6 +154,13 @@ export const CATEGORY_META: Record<string, CategoryMeta> = {
       'Formed metal panels with precise reveals and shadow lines, engineered around a drained and ventilated cavity.',
     tags: ['Exterior', 'Wall'],
     groups: ['facades'],
+  },
+  'polycarbonate-daylighting': {
+    title: 'Polycarbonate Daylighting',
+    blurb:
+      'Translucent polycarbonate glazing that carries daylight across long spans, insulating better than glass at a fraction of the weight.',
+    tags: ['Interior', 'Exterior', 'Wall', 'Roof'],
+    groups: ['glass', 'facades'],
   },
   'terracotta-rainscreens-and-cladding': {
     title: 'Terracotta Rainscreens & Cladding',
@@ -188,8 +209,13 @@ export const MANUFACTURER_SUBLINES: Record<string, string> = {
   autex: 'Acoustic ceilings & walls',
   bendheim: 'Architectural glass',
   gammastone: 'Composite stone panels',
-  nordic: 'Fiber cement panels',
   petrarch: 'Composite stone rainscreens',
+  steni: 'Stone composite facade panels',
+  nordic: 'GFRC panels',
+  ulma: 'Precast concrete rainscreen',
+  danpal: 'Polycarbonate daylighting',
+  forme: 'Extruded aluminum cladding & shading',
+  'ws-tyler': 'Stainless steel wire mesh',
   gordon: 'Metal ceilings & soffits',
   lindner: 'Metal ceiling systems',
   'millennium-forms': 'Formed metal panels',
