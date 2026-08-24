@@ -162,6 +162,13 @@ export const CATEGORY_META: Record<string, CategoryMeta> = {
     tags: ['Interior', 'Exterior', 'Wall', 'Roof'],
     groups: ['glass', 'facades'],
   },
+  'phenolic-and-hpl-panels': {
+    title: 'Phenolic & HPL Panels',
+    blurb:
+      'Compact laminate panels with a cured resin surface that shrugs off impact, graffiti, and moisture, carried on a concealed attachment system inside or out.',
+    tags: ['Interior', 'Exterior', 'Wall'],
+    groups: ['interiors', 'facades'],
+  },
   'terracotta-rainscreens-and-cladding': {
     title: 'Terracotta Rainscreens & Cladding',
     blurb:
@@ -216,6 +223,7 @@ export const MANUFACTURER_SUBLINES: Record<string, string> = {
   danpal: 'Polycarbonate daylighting',
   forme: 'Extruded aluminum cladding & shading',
   'ws-tyler': 'Stainless steel wire mesh',
+  'wall-panel-systems': 'Fundermax phenolic panels',
   gordon: 'Metal ceilings & soffits',
   lindner: 'Metal ceiling systems',
   'millennium-forms': 'Formed metal panels',

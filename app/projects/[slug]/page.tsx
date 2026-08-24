@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { notFound } from 'next/navigation';
 
 import { CtaBand } from '@/components/cta-band';
@@ -81,8 +81,11 @@ export default async function ProjectPage({
     notFound();
   }
 
+  // parseISO, not `new Date`: a date-only string goes through `new Date` as UTC
+  // midnight, which formats as the previous month here for anything dated the
+  // first of a month.
   const completed = project.projectDate
-    ? format(new Date(project.projectDate), 'MMMM yyyy')
+    ? format(parseISO(project.projectDate), 'MMMM yyyy')
     : '';
   const manufacturerNames = (project.manufacturers ?? []).map((manufacturer) =>
     manufacturer.name.trim()
