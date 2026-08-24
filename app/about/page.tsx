@@ -125,7 +125,9 @@ export default async function AboutPage() {
             Direct lines →
           </Link>
         </div>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-5">
+        {/* Fixed three-up rather than auto-fit: with two people an
+            auto-fit track stretches each portrait to half the page. */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {TEAM.map((member, index) => (
             <div
               key={member.name}

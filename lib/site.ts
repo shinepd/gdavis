@@ -72,11 +72,6 @@ export const TEAM: TeamMember[] = [
     email: 'maddie@gdavisassociates.com',
     photo: '/images/team/maddie.png',
   },
-  {
-    name: 'Makensi McDonald',
-    role: 'Marketing',
-    blurb: 'Continuing education, presentations, and sample coordination.',
-  },
 ];
 
 export const GEORGE = TEAM[0];
