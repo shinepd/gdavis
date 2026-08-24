@@ -1,7 +1,7 @@
 import { createClient } from 'next-sanity';
 import imageUrlBuilder from '@sanity/image-url';
 
-import { CATEGORY_META } from '@/lib/site';
+import { categoryTitle } from '@/lib/site';
 
 export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID as string,
@@ -157,7 +157,13 @@ export interface ProjectCardData {
   location?: string;
   projectDate?: string;
   architects?: { name: string }[];
-  manufacturers?: { _id: string; name: string; slug?: { current: string } }[];
+  manufacturers?: {
+    _id: string;
+    name: string;
+    slug?: { current: string };
+    /** Category slug, used to filter the Projects grid by material. */
+    category?: string;
+  }[];
   coverImage?: SanityImage;
 }
 
@@ -175,7 +181,7 @@ export async function getProjectCards(): Promise<ProjectCardData[]> {
       location,
       projectDate,
       architects[]->{ name },
-      manufacturers[]->{ _id, name, slug },
+      manufacturers[]->{ _id, name, slug, category },
       coverImage
     }
   `);
@@ -414,7 +420,7 @@ export async function getManufacturersByCategory(): Promise<
 
   return Array.from(grouped, ([slug, group]) => ({
     slug,
-    title: CATEGORY_META[slug]?.title ?? titleFromSlug(slug),
+    title: categoryTitle(slug),
     manufacturers: group,
   })).sort((a, b) => a.title.localeCompare(b.title));
 }
@@ -449,13 +455,6 @@ export async function getCategoryPhotoSources(): Promise<
   }
 
   return sources;
-}
-
-function titleFromSlug(slug: string): string {
-  return slug
-    .split('-')
-    .map((word) => (word === 'and' ? '&' : word[0].toUpperCase() + word.slice(1)))
-    .join(' ');
 }
 
 // Function to fetch a single product category by slug

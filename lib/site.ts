@@ -202,6 +202,21 @@ export const CATEGORY_META: Record<string, CategoryMeta> = {
 };
 
 /**
+ * Display title for a Sanity category slug. Anything `CATEGORY_META` does not
+ * describe falls back to a title derived from the slug, so a category added in
+ * the Studio still reads sensibly before its copy is written here.
+ */
+export function categoryTitle(slug: string): string {
+  return (
+    CATEGORY_META[slug]?.title ??
+    slug
+      .split('-')
+      .map((word) => (word === 'and' ? '&' : word[0].toUpperCase() + word.slice(1)))
+      .join(' ')
+  );
+}
+
+/**
  * One-line descriptor under each manufacturer in the "Represented lines"
  * directory, keyed by Sanity slug. Anything absent falls back to its category
  * title, so a newly added manufacturer still reads sensibly.

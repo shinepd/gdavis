@@ -18,6 +18,8 @@ export interface ProductCategoryCard {
   manufacturers: { name: string; website?: string }[];
   image?: string;
   imageAlt: string;
+  /** True when at least one project uses a line in this category. */
+  hasProjects: boolean;
 }
 
 const FILTER_KEYS = PRODUCT_FILTERS.map((filter) => filter.key);
@@ -52,9 +54,24 @@ export function ProductCategoryGrid({
             <article
               key={category.slug}
               id={category.slug}
-              className="rv flex flex-col gap-[18px] bg-surface px-[26px] pt-[26px] pb-[22px] transition-colors duration-200 hover:bg-brand-soft"
+              className={cn(
+                'rv relative flex flex-col gap-[18px] bg-surface px-[26px] pt-[26px] pb-[22px] transition-colors duration-200',
+                category.hasProjects && 'group hover:bg-brand-soft'
+              )}
               style={revealDelay(index, 3)}
             >
+              {/* A stretched link rather than wrapping the card: the
+                  manufacturer pills below are links out to each line's own
+                  site, and an anchor cannot nest inside another. Categories
+                  with no installed work yet stay inert instead of sending a
+                  visitor to an empty grid. */}
+              {category.hasProjects && (
+                <Link
+                  href={`/projects?material=${category.slug}`}
+                  aria-label={`Projects using ${category.title}`}
+                  className="absolute inset-0 z-[1]"
+                />
+              )}
               <ImageSlot
                 src={category.image}
                 alt={category.imageAlt}
@@ -74,7 +91,7 @@ export function ProductCategoryGrid({
                     </span>
                   ))}
                 </div>
-                <h2 className="text-[24px] leading-[1.1] tracking-[-0.02em]">
+                <h2 className="text-[24px] leading-[1.1] tracking-[-0.02em] transition-colors group-hover:text-brand">
                   {category.title}
                 </h2>
                 <p className="text-[14.5px] leading-[1.5] text-ink-2">
@@ -82,7 +99,7 @@ export function ProductCategoryGrid({
                 </p>
               </div>
 
-              <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
+              <div className="relative z-10 mt-auto flex flex-wrap gap-1.5 pt-1">
                 {category.manufacturers.map((manufacturer) => {
                   const pill = cn(
                     'rounded-full bg-[color-mix(in_oklab,var(--ink)_7%,transparent)] px-[11px] py-1.5 font-mono text-[11px] tracking-[0.04em] text-ink'

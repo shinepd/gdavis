@@ -35,6 +35,16 @@ export default async function ProductsPage() {
     projects
   );
 
+  // Categories with installed work behind them: only those link through to a
+  // filtered Projects view, so a card never lands on an empty grid.
+  const categoriesWithProjects = new Set(
+    projects.flatMap((project) =>
+      (project.manufacturers ?? [])
+        .map((manufacturer) => manufacturer.category)
+        .filter((category): category is string => Boolean(category))
+    )
+  );
+
   const cards: ProductCategoryCard[] = categories.map((category) => {
     const meta = CATEGORY_META[category.slug];
     const cover = categoryImages[category.slug];
@@ -51,6 +61,7 @@ export default async function ProductsPage() {
       })),
       image: imageUrl(cover?.image, 800, 600),
       imageAlt: cover?.alt ?? category.title,
+      hasProjects: categoriesWithProjects.has(category.slug),
     };
   });
 

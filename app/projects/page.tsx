@@ -5,6 +5,7 @@ import { CtaBand } from '@/components/cta-band';
 import { ProjectGrid } from '@/components/project-grid';
 import { Eyebrow } from '@/components/ui/eyebrow';
 import { getProjectCards } from '@/lib/sanity';
+import { categoryTitle } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Projects | G. Davis & Associates',
@@ -16,8 +17,12 @@ export default async function ProjectsPage() {
   const projects = await getProjectCards();
 
   // Chips come from the manufacturers that actually appear on a project,
-  // ordered by how much work each one has behind it.
-  const counts = new Map<string, { key: string; label: string; count: number }>();
+  // ordered by how much work each one has behind it. Each one carries its
+  // material so the grid can narrow the chips to a single one.
+  const counts = new Map<
+    string,
+    { key: string; label: string; material?: string; count: number }
+  >();
   for (const project of projects) {
     for (const manufacturer of project.manufacturers ?? []) {
       const key = manufacturer.slug?.current;
@@ -27,14 +32,30 @@ export default async function ProjectsPage() {
       if (entry) {
         entry.count += 1;
       } else {
-        counts.set(key, { key, label: manufacturer.name.trim(), count: 1 });
+        counts.set(key, {
+          key,
+          label: manufacturer.name.trim(),
+          material: manufacturer.category,
+          count: 1,
+        });
       }
     }
   }
 
   const manufacturers = Array.from(counts.values())
     .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
-    .map(({ key, label }) => ({ key, label }));
+    .map(({ key, label, material }) => ({ key, label, material }));
+
+  // Only materials with work behind them can be scoped to, which is the same
+  // set the material cards on Products link here with.
+  const materialTitles: Record<string, string> = {};
+  for (const manufacturer of manufacturers) {
+    if (manufacturer.material) {
+      materialTitles[manufacturer.material] = categoryTitle(
+        manufacturer.material
+      );
+    }
+  }
 
   return (
     <>
@@ -52,8 +73,8 @@ export default async function ProjectsPage() {
           </div>
           <p className="max-w-[44ch] text-[18px] leading-[1.55] text-ink-2">
             Aviation, education, civic, and healthcare work across Kansas,
-            Missouri, Iowa, and Nebraska. Filter by manufacturer to review a
-            product in place before specifying it.
+            Missouri, Iowa, and Nebraska. Filter by material or manufacturer to
+            review a product in place before specifying it.
           </p>
         </div>
       </section>
@@ -61,7 +82,11 @@ export default async function ProjectsPage() {
       <Suspense
         fallback={<div className="container-page h-[68px] border-y border-line" />}
       >
-        <ProjectGrid projects={projects} manufacturers={manufacturers} />
+        <ProjectGrid
+          projects={projects}
+          manufacturers={manufacturers}
+          materialTitles={materialTitles}
+        />
       </Suspense>
 
       <CtaBand
