@@ -213,6 +213,17 @@ html[data-theme='dark'],
   }
 }
 
+/* Hero carousel progress rail. Sweeps left to right across the active frame's
+   dwell, so the pacing is legible before anyone reaches for a control. */
+@keyframes hero-rail {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 /* Scroll reveal - elements start hidden and rise into place once observed. */
 @keyframes rise {
   from {

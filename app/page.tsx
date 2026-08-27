@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { CtaBand } from '@/components/cta-band';
+import { HeroCarousel } from '@/components/hero-carousel';
 import { ImageSlot } from '@/components/image-slot';
 import { ProjectCard } from '@/components/project-card';
 import { revealDelay } from '@/lib/reveal';
@@ -28,12 +29,14 @@ export default async function Home() {
     getCategoryPhotoSources(),
   ]);
 
-  const heroProject = projects.find((project) => project.coverImage);
   const recentProjects = projects.slice(0, 4);
-  // A different building from the hero, so the page doesn't repeat itself.
-  const aboutProject = projects.find(
-    (project) => project.coverImage && project._id !== heroProject?._id
-  );
+  // A building that isn't already a card above, so the page doesn't repeat
+  // itself. Falls back to any cover on a very short project list.
+  const aboutProject =
+    projects
+      .slice(recentProjects.length)
+      .find((project) => project.coverImage) ??
+    projects.find((project) => project.coverImage);
 
   // Each home card spans several product categories, so it draws from the
   // combined pool of projects using any of their manufacturers.
@@ -87,16 +90,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <ImageSlot
-          src={imageUrl(heroProject?.coverImage, 2100, 800)}
-          alt={heroProject ? heroProject.title.trim() : ''}
-          aspect="21 / 8"
-          caption="drop photo - hero building exterior, terracotta or metal facade"
-          sizes="(max-width: 1360px) 100vw, 1360px"
-          priority
-          large
-          className="rv mt-14"
-        />
+        <HeroCarousel className="rv mt-14" />
       </section>
 
       {/* Capability strip. Deliberately describes capability instead of
