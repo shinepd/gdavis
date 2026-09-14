@@ -1,5 +1,3 @@
-import { Suspense } from 'react';
-
 import { CtaBand } from '@/components/cta-band';
 import { ProjectGrid } from '@/components/project-grid';
 import { Eyebrow } from '@/components/ui/eyebrow';
@@ -14,8 +12,15 @@ export const metadata = pageMetadata({
   path: '/projects',
 });
 
-export default async function ProjectsPage() {
-  const projects = await getProjectCards();
+export default async function ProjectsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ material?: string; manufacturer?: string }>;
+}) {
+  const [projects, filters] = await Promise.all([
+    getProjectCards(),
+    searchParams,
+  ]);
 
   // Chips come from the manufacturers that actually appear on a project,
   // ordered by how much work each one has behind it. Each one carries its
@@ -80,15 +85,13 @@ export default async function ProjectsPage() {
         </div>
       </section>
 
-      <Suspense
-        fallback={<div className="container-page h-[68px] border-y border-line" />}
-      >
-        <ProjectGrid
-          projects={projects}
-          manufacturers={manufacturers}
-          materialTitles={materialTitles}
-        />
-      </Suspense>
+      <ProjectGrid
+        projects={projects}
+        manufacturers={manufacturers}
+        materialTitles={materialTitles}
+        material={filters.material}
+        manufacturer={filters.manufacturer}
+      />
 
       <CtaBand
         title="Review a project in person"

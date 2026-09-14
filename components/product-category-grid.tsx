@@ -1,11 +1,8 @@
-'use client';
-
 import Link from 'next/link';
 
 import { FilterBar } from '@/components/filter-bar';
 import { ImageSlot } from '@/components/image-slot';
 import { revealDelay } from '@/lib/reveal';
-import { useUrlFilter } from '@/lib/use-url-filter';
 import { PRODUCT_FILTERS, type ProductFilterKey } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
@@ -22,14 +19,24 @@ export interface ProductCategoryCard {
   hasProjects: boolean;
 }
 
-const FILTER_KEYS = PRODUCT_FILTERS.map((filter) => filter.key);
+const FILTER_KEYS: readonly string[] = PRODUCT_FILTERS.map(
+  (filter) => filter.key
+);
 
+/**
+ * Renders on the server from `?filter`, so every category card and the link
+ * each one carries into a filtered Projects view are present in the HTML.
+ * Holding the filter in client state kept the whole grid out of the markup.
+ */
 export function ProductCategoryGrid({
   categories,
+  filter,
 }: {
   categories: ProductCategoryCard[];
+  /** Raw `?filter` value, validated here. */
+  filter?: string;
 }) {
-  const [active, setActive] = useUrlFilter('filter', FILTER_KEYS);
+  const active = filter && FILTER_KEYS.includes(filter) ? filter : 'all';
 
   const matches = (category: ProductCategoryCard) =>
     active === 'all' || category.groups.includes(active as ProductFilterKey);
@@ -41,9 +48,11 @@ export function ProductCategoryGrid({
       <section className="container-page pb-6">
         <FilterBar
           label="Filter"
-          options={[...PRODUCT_FILTERS]}
+          options={PRODUCT_FILTERS.map((option) => ({
+            ...option,
+            href: option.key === 'all' ? '/products' : `/products?filter=${option.key}`,
+          }))}
           active={active}
-          onChange={setActive}
           count={`${visible.length} of ${categories.length}`}
         />
       </section>
@@ -56,6 +65,10 @@ export function ProductCategoryGrid({
               id={category.slug}
               className={cn(
                 'rv relative flex flex-col gap-[18px] bg-surface px-[26px] pt-[26px] pb-[22px] transition-colors duration-200',
+                // Project pages link straight to a card by id; without this the
+                // sticky header and filter bar land on top of the one you asked
+                // for. The larger offset is for lg, where the bar is sticky too.
+                'scroll-mt-[85px] lg:scroll-mt-[150px]',
                 category.hasProjects && 'group hover:bg-brand-soft'
               )}
               style={revealDelay(index, 3)}

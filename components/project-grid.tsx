@@ -1,10 +1,7 @@
-'use client';
-
 import { FilterBar, type FilterOption } from '@/components/filter-bar';
 import { ProjectCard } from '@/components/project-card';
 import { revealDelay } from '@/lib/reveal';
 import type { ProjectCardData } from '@/lib/sanity';
-import { useUrlFilter } from '@/lib/use-url-filter';
 
 /** A manufacturer chip, plus the material it belongs to so it can be scoped. */
 export interface ManufacturerOption extends FilterOption {
@@ -17,6 +14,24 @@ interface ProjectGridProps {
   manufacturers: ManufacturerOption[];
   /** Material titles keyed by category slug, for the scope chip. */
   materialTitles: Record<string, string>;
+  /** Raw `?material` value, validated here. */
+  material?: string;
+  /** Raw `?manufacturer` value, validated here. */
+  manufacturer?: string;
+}
+
+/** `/projects`, with only the filters that are actually set. */
+function filterHref(material?: string, manufacturer?: string) {
+  const params = new URLSearchParams();
+
+  if (material) params.set('material', material);
+  if (manufacturer && manufacturer !== 'all') {
+    params.set('manufacturer', manufacturer);
+  }
+
+  const query = params.toString();
+
+  return query ? `/projects?${query}` : '/projects';
 }
 
 /**
@@ -26,25 +41,34 @@ interface ProjectGridProps {
  * cards on Products link here. It narrows the manufacturer chips to the lines
  * in that material, so the two filters read as one path rather than two
  * competing dimensions. `?manufacturer=petrarch` then picks a single line.
+ *
+ * This renders on the server. It used to hold the filter in client state via
+ * `useSearchParams`, which opts the whole subtree out of server rendering:
+ * the page shipped with no project cards in its HTML at all, leaving twenty
+ * project pages with no inbound link anywhere on the site and the hub for all
+ * seventy-three of them looking empty to anything that does not run JavaScript.
+ * Reading the query string here instead keeps every card, and every filtered
+ * view, in the markup.
  */
 export function ProjectGrid({
   projects,
   manufacturers,
   materialTitles,
+  material: rawMaterial,
+  manufacturer: rawManufacturer,
 }: ProjectGridProps) {
-  const materialKeys = Object.keys(materialTitles);
-  const [material, setMaterial] = useUrlFilter('material', materialKeys, '');
+  const material =
+    rawMaterial && rawMaterial in materialTitles ? rawMaterial : '';
 
   const scoped = material
-    ? manufacturers.filter(
-        (manufacturer) => manufacturer.material === material
-      )
+    ? manufacturers.filter((manufacturer) => manufacturer.material === material)
     : manufacturers;
 
   // Only the in-scope chips are valid keys, so a manufacturer left in the URL
   // from a wider view resolves back to "all" instead of showing nothing.
   const keys = ['all', ...scoped.map((manufacturer) => manufacturer.key)];
-  const [active, setActive] = useUrlFilter('manufacturer', keys);
+  const active =
+    rawManufacturer && keys.includes(rawManufacturer) ? rawManufacturer : 'all';
 
   const visible = projects.filter((project) => {
     const lines = project.manufacturers ?? [];
@@ -63,16 +87,20 @@ export function ProjectGrid({
       <section className="container-page pb-6">
         <FilterBar
           label="Manufacturer"
-          options={[{ key: 'all', label: 'All' }, ...scoped]}
+          options={[{ key: 'all', label: 'All' }, ...scoped].map((option) => ({
+            ...option,
+            href: filterHref(material, option.key),
+          }))}
           active={active}
-          onChange={setActive}
           count={`${visible.length} of ${projects.length}`}
           scope={
             material
               ? {
                   name: 'Material',
                   label: materialTitles[material],
-                  onClear: () => setMaterial(''),
+                  // Widening the scope keeps the chosen line: every chip is
+                  // valid again once the material comes off.
+                  clearHref: filterHref('', active),
                 }
               : undefined
           }
@@ -93,7 +121,8 @@ export function ProjectGrid({
 
         {visible.length === 0 && (
           <p className="py-16 text-center text-[15px] text-ink-3">
-            No projects yet for that {material && active === 'all' ? 'material' : 'manufacturer'}.
+            No projects yet for that{' '}
+            {material && active === 'all' ? 'material' : 'manufacturer'}.
           </p>
         )}
       </section>

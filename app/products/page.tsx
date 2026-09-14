@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import Link from 'next/link';
 
 import { ImageSlot } from '@/components/image-slot';
@@ -19,11 +18,16 @@ import {
 } from '@/lib/sanity';
 import { CATEGORY_META, CONTACT_PATHS, GEORGE, SITE } from '@/lib/site';
 
-export default async function ProductsPage() {
-  const [categories, projects, photoSources] = await Promise.all([
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ filter?: string }>;
+}) {
+  const [categories, projects, photoSources, filters] = await Promise.all([
     getManufacturersByCategory(),
     getProjectCards(),
     getCategoryPhotoSources(),
+    searchParams,
   ]);
 
   const categoryImages = assignPhotos(
@@ -111,13 +115,7 @@ export default async function ProductsPage() {
       <ManufacturerDirectory categories={categories} />
 
       <div className="pt-14">
-        <Suspense
-          fallback={
-            <div className="container-page h-[68px] border-y border-line" />
-          }
-        >
-          <ProductCategoryGrid categories={cards} />
-        </Suspense>
+        <ProductCategoryGrid categories={cards} filter={filters.filter} />
       </div>
 
       {/* Projects using these lines */}
