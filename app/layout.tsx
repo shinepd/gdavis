@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Archivo, IBM_Plex_Mono } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 
 import { Header } from '@/components/header';
@@ -90,6 +91,11 @@ export default function RootLayout({
           <main className="w-full flex-1">{children}</main>
           <Footer />
         </ThemeProvider>
+        {/* Cookieless page and referrer counts, no cross-site identifiers, so
+            there is nothing here that needs a consent banner. Needs Analytics
+            switched on for the project in the Vercel dashboard to record
+            anything. */}
+        <Analytics />
       </body>
     </html>
   );
