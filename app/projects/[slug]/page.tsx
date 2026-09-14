@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { format, parseISO } from 'date-fns';
@@ -25,6 +26,38 @@ export async function generateStaticParams() {
   const slugs = await getAllProjectSlugs();
 
   return slugs.map((slug) => ({ slug }));
+}
+
+/**
+ * The lines used on a project, each linking to its card on Products.
+ *
+ * That card is where a line's detail lives - the blurb, the applications, and
+ * the link out to the manufacturer's own site - so it is the right answer to
+ * "what is that facade". A line with no category has no card to point at and
+ * stays plain text.
+ */
+function LineList({
+  lines,
+  separator,
+}: {
+  lines: { name: string; category?: string }[];
+  separator: string;
+}) {
+  return lines.map((line, index) => (
+    <Fragment key={line.name}>
+      {index > 0 && separator}
+      {line.category ? (
+        <Link
+          href={`/products#${line.category}`}
+          className="underline decoration-line underline-offset-[3px] transition-colors hover:decoration-brand"
+        >
+          {line.name}
+        </Link>
+      ) : (
+        line.name
+      )}
+    </Fragment>
+  ));
 }
 
 export async function generateMetadata({
@@ -112,9 +145,11 @@ export default async function ProjectPage({
   const completed = project.projectDate
     ? format(parseISO(project.projectDate), 'MMMM yyyy')
     : '';
-  const manufacturerNames = (project.manufacturers ?? []).map((manufacturer) =>
-    manufacturer.name.trim()
-  );
+  const lines = (project.manufacturers ?? []).map((manufacturer) => ({
+    name: manufacturer.name.trim(),
+    category: manufacturer.category,
+  }));
+  const manufacturerNames = lines.map((line) => line.name);
 
   // Other work using the same lines, so a visitor can keep browsing by material.
   const related = allProjects
@@ -136,7 +171,13 @@ export default async function ProjectPage({
         .map((architect) => architect.name.trim())
         .join(', '),
     },
-    { label: 'Manufacturers', value: manufacturerNames.join(', ') },
+    {
+      label: lines.length === 1 ? 'Manufacturer' : 'Manufacturers',
+      value: manufacturerNames.join(', '),
+      // Rendered as links instead, so the fact row is a way into the line
+      // rather than a dead end.
+      node: <LineList lines={lines} separator=", " />,
+    },
   ].filter((fact) => fact.value);
 
   const hasDescription = (project.description ?? []).length > 0;
@@ -163,9 +204,9 @@ export default async function ProjectPage({
               {project.title.trim()}
             </h1>
           </div>
-          {manufacturerNames.length > 0 && (
+          {lines.length > 0 && (
             <div className="font-mono text-[11px] uppercase tracking-[0.1em] text-brand">
-              {manufacturerNames.join(' · ')}
+              <LineList lines={lines} separator=" · " />
             </div>
           )}
         </div>
@@ -207,7 +248,9 @@ export default async function ProjectPage({
                 <dt>
                   <MonoLabel>{fact.label}</MonoLabel>
                 </dt>
-                <dd className="text-[15.5px] text-ink">{fact.value}</dd>
+                <dd className="text-[15.5px] text-ink">
+                  {fact.node ?? fact.value}
+                </dd>
               </div>
             ))}
           </dl>
