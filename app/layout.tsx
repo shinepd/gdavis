@@ -23,8 +23,10 @@ const plexMono = IBM_Plex_Mono({
   display: 'swap',
 });
 
+// Kept under the ~160 characters Google renders. The firm name is already in
+// the title, so the description spends its length on what we do and where.
 const DESCRIPTION =
-  "G. Davis & Associates is a manufacturer's representative firm for interior and exterior architectural products, serving design and construction teams across Kansas, Missouri, Iowa, and Nebraska.";
+  "Manufacturer's representative for interior and exterior architectural products, serving design teams across Kansas, Missouri, Iowa, and Nebraska.";
 
 export const metadata: Metadata = {
   // Every relative URL below - canonicals, social images - resolves against

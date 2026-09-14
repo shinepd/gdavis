@@ -18,6 +18,32 @@ import { SITE } from './site';
  * doing the same still picks it up. Relying on that would leave two of the
  * five marketing pages with no social card and no obvious reason why.
  */
+/**
+ * Google renders about 160 characters of a description and drops the rest, so
+ * anything longer is wasted at best and cut mid-word at worst. Trims back to
+ * the last sentence that fits, or failing that the last whole word.
+ */
+export function clampDescription(text: string, limit = 158) {
+  const clean = text.replace(/\s+/g, ' ').trim();
+
+  if (clean.length <= limit) return clean;
+
+  const head = clean.slice(0, limit);
+  const sentence = Math.max(
+    head.lastIndexOf('. '),
+    head.lastIndexOf('! '),
+    head.lastIndexOf('? '),
+  );
+
+  // Only cut at a sentence when enough of one survives to read as a summary
+  // rather than a fragment.
+  if (sentence > limit * 0.6) return head.slice(0, sentence + 1);
+
+  const word = head.lastIndexOf(' ');
+
+  return `${(word > 0 ? head.slice(0, word) : head).replace(/[,;:]$/, '')}…`;
+}
+
 export function pageMetadata({
   title,
   description,
@@ -36,26 +62,27 @@ export function pageMetadata({
   // og:title carries the firm name because the root `title.template` applies
   // only to the document title, never to the social tags.
   const socialTitle = `${title} | ${SITE.name}`;
+  const summary = clampDescription(description);
   const ogImages = images?.length ? images : ['/opengraph-image.png'];
   const twitterImages = images?.length ? images : ['/twitter-image.png'];
 
   return {
     title,
-    description,
+    description: summary,
     alternates: { canonical: path },
     openGraph: {
       type,
       siteName: SITE.name,
       locale: 'en_US',
       title: socialTitle,
-      description,
+      description: summary,
       url: path,
       images: ogImages,
     },
     twitter: {
       card: 'summary_large_image',
       title: socialTitle,
-      description,
+      description: summary,
       images: twitterImages,
     },
   };
