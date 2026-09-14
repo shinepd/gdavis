@@ -1,4 +1,5 @@
 import { ContactForm } from '@/components/contact-form';
+import { LocalBusinessSchema } from '@/components/structured-data';
 import { Eyebrow } from '@/components/ui/eyebrow';
 import { GEORGE, MADDIE, SITE } from '@/lib/site';
 
@@ -20,6 +21,8 @@ export default function ContactPage() {
 
   return (
     <>
+      <LocalBusinessSchema />
+
       {/* Hero */}
       <section className="container-page pt-16 pb-12 md:pt-24">
         <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-16">

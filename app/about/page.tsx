@@ -5,13 +5,15 @@ import { ImageSlot } from '@/components/image-slot';
 import { revealDelay } from '@/lib/reveal';
 import { Eyebrow } from '@/components/ui/eyebrow';
 import { getProjectCards, imageUrl } from '@/lib/sanity';
+import { pageMetadata } from '@/lib/seo';
 import { TEAM } from '@/lib/site';
 
-export const metadata = {
-  title: 'About Us | G. Davis & Associates',
+export const metadata = pageMetadata({
+  title: 'About Our Architectural Rep Firm',
   description:
-    "A manufacturer's representative firm serving architects, contractors, and building owners across Kansas, Missouri, Iowa, and Nebraska.",
-};
+    "A manufacturer's representative firm serving architects, contractors, and building owners across Kansas, Missouri, Iowa, and Nebraska, from specification through installation.",
+  path: '/about',
+});
 
 // Unnumbered by design: the handoff replaced the 01/02/03 sequence here.
 const VALUES = [

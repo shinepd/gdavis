@@ -7,6 +7,7 @@ import { CtaBand } from '@/components/cta-band';
 import { ImageSlot } from '@/components/image-slot';
 import { PortableText } from '@/components/portable-text';
 import { ProjectCard } from '@/components/project-card';
+import { BreadcrumbSchema } from '@/components/structured-data';
 import { revealDelay } from '@/lib/reveal';
 import { Eyebrow, MonoLabel } from '@/components/ui/eyebrow';
 import {
@@ -16,6 +17,7 @@ import {
   imageUrl,
   urlFor,
 } from '@/lib/sanity';
+import { pageMetadata } from '@/lib/seo';
 import { formatLocation } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
@@ -35,13 +37,34 @@ export async function generateMetadata({
 
   if (!project) {
     return {
-      title: 'Project Not Found | G. Davis & Associates',
+      // The root layout's title template appends the firm name.
+      title: 'Project Not Found',
       description: 'The requested project could not be found.',
     };
   }
 
-  let description =
-    'Project details from G. Davis & Associates, architectural product representation for design and construction teams.';
+  // Most projects carry no prose, so the fallback is built from the facts the
+  // record does have. A shared boilerplate line across seventy-odd pages reads
+  // as duplicate content and gives a searcher nothing to click.
+  const facts = [
+    formatLocation(project.location),
+    project.projectDate ? format(parseISO(project.projectDate), 'MMMM yyyy') : '',
+    (project.architects ?? [])
+      .map((architect) => architect.name.trim())
+      .filter(Boolean)
+      .join(', '),
+  ].filter(Boolean);
+
+  const lines = (project.manufacturers ?? [])
+    .map((manufacturer) => manufacturer.name.trim())
+    .filter(Boolean);
+
+  let description = [
+    `${project.title.trim()}${facts.length ? ` - ${facts.join(' · ')}` : ''}.`,
+    lines.length
+      ? `Finished with ${lines.join(', ')}, represented by G. Davis & Associates.`
+      : 'An installation represented by G. Davis & Associates.',
+  ].join(' ');
 
   const firstBlock = project.description?.[0];
   if (
@@ -55,15 +78,17 @@ export async function generateMetadata({
     description = (firstBlock.children[0].text as string) || description;
   }
 
-  return {
-    title: `${project.title.trim()} | G. Davis & Associates`,
+  return pageMetadata({
+    title: project.title.trim(),
     description,
-    openGraph: {
-      images: project.coverImage
-        ? [urlFor(project.coverImage).width(1200).height(630).url()]
-        : [],
-    },
-  };
+    path: `/projects/${slug}`,
+    type: 'article',
+    // Left undefined rather than empty when a project has no cover, so the
+    // page falls back to the site card instead of shipping none.
+    images: project.coverImage
+      ? [urlFor(project.coverImage).width(1200).height(630).url()]
+      : undefined,
+  });
 }
 
 export default async function ProjectPage({
@@ -118,6 +143,13 @@ export default async function ProjectPage({
 
   return (
     <>
+      <BreadcrumbSchema
+        items={[
+          { name: 'Projects', path: '/projects' },
+          { name: project.title.trim(), path: `/projects/${slug}` },
+        ]}
+      />
+
       {/* Hero */}
       <section className="container-page pt-14 md:pt-20">
         <Link href="/projects" className="link-more mb-8 text-ink-2">

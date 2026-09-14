@@ -7,6 +7,17 @@
  * application tags, and which filter groups a category belongs to.
  */
 
+/**
+ * Absolute origin for canonical URLs, the sitemap, and social card images.
+ *
+ * Set `NEXT_PUBLIC_SITE_URL` once the firm's own domain is live; everything
+ * that needs an absolute URL reads it from here, so the cutover is one env
+ * value rather than a search and replace.
+ */
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gdavis.vercel.app'
+).replace(/\/$/, '');
+
 export const SITE = {
   name: 'G. Davis & Associates',
   tagline:

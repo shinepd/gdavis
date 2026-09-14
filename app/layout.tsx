@@ -6,6 +6,8 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { RevealObserver } from '@/components/reveal';
 import { ThemeProvider } from '@/components/theme-provider';
+import { OrganizationSchema } from '@/components/structured-data';
+import { SITE, SITE_URL } from '@/lib/site';
 
 const archivo = Archivo({
   subsets: ['latin'],
@@ -21,20 +23,40 @@ const plexMono = IBM_Plex_Mono({
   display: 'swap',
 });
 
+const DESCRIPTION =
+  "G. Davis & Associates is a manufacturer's representative firm for interior and exterior architectural products, serving design and construction teams across Kansas, Missouri, Iowa, and Nebraska.";
+
 export const metadata: Metadata = {
-  title: 'G. Davis & Associates | Architectural Products',
-  description:
-    "G. Davis & Associates is a manufacturer's representative firm for interior and exterior architectural products, serving design and construction teams across Kansas, Missouri, Iowa, and Nebraska.",
-  keywords: [
-    'architectural products',
-    "manufacturer's representative",
-    'G. Davis & Associates',
-    'rainscreens',
-    'acoustical ceilings',
-    'building materials',
-  ],
-  authors: [{ name: 'G. Davis & Associates' }],
-  creator: 'G. Davis & Associates',
+  // Every relative URL below - canonicals, social images - resolves against
+  // this, so a page only has to name its own path.
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'G. Davis & Associates | Architectural Product Reps, Kansas City',
+    template: '%s | G. Davis & Associates',
+  },
+  description: DESCRIPTION,
+  alternates: { canonical: '/' },
+  authors: [{ name: SITE.name }],
+  creator: SITE.name,
+  publisher: SITE.name,
+  openGraph: {
+    type: 'website',
+    siteName: SITE.name,
+    locale: 'en_US',
+    url: '/',
+    title: 'G. Davis & Associates | Architectural Product Reps, Kansas City',
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'G. Davis & Associates | Architectural Product Reps, Kansas City',
+    description: DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
+  },
 };
 
 export const viewport: Viewport = {
@@ -54,6 +76,7 @@ export default function RootLayout({
       <body
         className={`${archivo.variable} ${plexMono.variable} flex min-h-screen flex-col`}
       >
+        <OrganizationSchema />
         <ThemeProvider
           attribute={['class', 'data-theme']}
           defaultTheme="system"

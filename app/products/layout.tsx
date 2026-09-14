@@ -1,10 +1,11 @@
-import { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Products | G. Davis & Associates',
+export const metadata = pageMetadata({
+  title: 'Rainscreens, Ceilings & Cladding',
   description:
-    'Established interior and exterior product lines represented by G. Davis & Associates, with technical support from specification through installation.',
-};
+    'Rainscreens, cladding, acoustical and metal ceilings, architectural glass, and composite stone lines represented across Kansas, Missouri, Iowa, and Nebraska, with technical support from specification through installation.',
+  path: '/products',
+});
 
 export default function ProductsLayout({
   children,

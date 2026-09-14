@@ -1,17 +1,18 @@
-import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 import { CtaBand } from '@/components/cta-band';
 import { ProjectGrid } from '@/components/project-grid';
 import { Eyebrow } from '@/components/ui/eyebrow';
 import { getProjectCards } from '@/lib/sanity';
+import { pageMetadata } from '@/lib/seo';
 import { categoryTitle } from '@/lib/site';
 
-export const metadata: Metadata = {
-  title: 'Projects | G. Davis & Associates',
+export const metadata = pageMetadata({
+  title: 'Installed Project Gallery',
   description:
-    'Aviation, education, civic, and healthcare work across Kansas, Missouri, Iowa, and Nebraska, finished with the product lines G. Davis & Associates represents.',
-};
+    'Aviation, education, civic, and healthcare buildings across Kansas, Missouri, Iowa, and Nebraska, finished with the rainscreen, ceiling, and cladding lines G. Davis & Associates represents.',
+  path: '/projects',
+});
 
 export default async function ProjectsPage() {
   const projects = await getProjectCards();

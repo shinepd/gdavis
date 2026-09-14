@@ -297,6 +297,18 @@ export async function getProjectBySlug(slug: string): Promise<Project> {
   return data;
 }
 
+/** Slug plus last-edit date for each project, for the sitemap. */
+export async function getProjectSitemapEntries(): Promise<
+  { slug: string; updatedAt: string }[]
+> {
+  return client.fetch(`
+    *[_type == "project" && defined(slug.current)] {
+      "slug": slug.current,
+      "updatedAt": _updatedAt
+    }
+  `);
+}
+
 // Function to fetch all project slugs for static paths
 export async function getAllProjectSlugs(): Promise<string[]> {
   const data = await client.fetch(`
