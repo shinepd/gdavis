@@ -37,6 +37,12 @@ const MONO = 'font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink-3';
  * The three columns are a grid rather than a flex row so that a scope adds a
  * second row whose label lines up with its own chip: the label column has to
  * fit both "Material" and "Manufacturer" without either being guessed at.
+ *
+ * Below `sm` the chips span the full width instead of sharing a row with the
+ * label. Holding the label column on a phone left roughly 215px of a 390px
+ * screen for chips, which wrapped nineteen manufacturers into seventeen rows
+ * and pushed the first project most of a screen down. The counter is desktop
+ * only for the same reason - the filtered grid is directly below it.
  */
 export function FilterBar({
   label,
@@ -47,10 +53,12 @@ export function FilterBar({
   scope,
 }: FilterBarProps) {
   return (
-    <div className="z-40 grid grid-cols-[auto_1fr_auto] items-start gap-x-3 gap-y-2 border-y border-line bg-[color-mix(in_oklab,var(--bg)_92%,transparent)] py-4 backdrop-blur-[10px] lg:sticky lg:top-[65px]">
+    <div className="z-40 grid grid-cols-[auto_1fr] items-start gap-x-3 gap-y-2 border-y border-line bg-[color-mix(in_oklab,var(--bg)_92%,transparent)] py-4 backdrop-blur-[10px] sm:grid-cols-[auto_1fr_auto] lg:sticky lg:top-[65px]">
       {scope && (
         <>
-          <span className={cn(MONO, 'pt-2.5')}>{scope.name}</span>
+          <span className={cn(MONO, 'self-center sm:self-start sm:pt-2.5')}>
+            {scope.name}
+          </span>
           <div>
             <button
               type="button"
@@ -67,15 +75,19 @@ export function FilterBar({
               <span className="sr-only">- clear this material</span>
             </button>
           </div>
-          <span className={cn(MONO, 'pt-2.5 pl-2 tracking-[0.1em]')}>
+          <span
+            className={cn(MONO, 'hidden pt-2.5 pl-2 tracking-[0.1em] sm:inline')}
+          >
             {count}
           </span>
         </>
       )}
 
-      <span className={cn(MONO, 'pt-2.5')}>{label}</span>
+      <span className={cn(MONO, 'col-span-2 sm:col-span-1 sm:pt-2.5')}>
+        {label}
+      </span>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="col-span-2 flex flex-wrap gap-2 sm:col-span-1">
         {options.map((option) => {
           const isActive = option.key === active;
           return (
@@ -99,7 +111,7 @@ export function FilterBar({
 
       {/* The count sits on the scope row when there is one, so this cell only
           carries it on an unscoped bar. */}
-      <span className={cn(MONO, 'pt-2.5 pl-2 tracking-[0.1em]')}>
+      <span className={cn(MONO, 'hidden pt-2.5 pl-2 tracking-[0.1em] sm:inline')}>
         {scope ? '' : count}
       </span>
     </div>
