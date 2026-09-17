@@ -4,7 +4,6 @@ import { CtaBand } from '@/components/cta-band';
 import { ImageSlot } from '@/components/image-slot';
 import { revealDelay } from '@/lib/reveal';
 import { Eyebrow } from '@/components/ui/eyebrow';
-import { getProjectCards, imageUrl } from '@/lib/sanity';
 import { pageMetadata } from '@/lib/seo';
 import { TEAM } from '@/lib/site';
 
@@ -31,10 +30,7 @@ const VALUES = [
   },
 ];
 
-export default async function AboutPage() {
-  const projects = await getProjectCards();
-  const historyProject = projects.find((project) => project.coverImage);
-
+export default function AboutPage() {
   return (
     <>
       {/* Hero */}
@@ -79,10 +75,13 @@ export default async function AboutPage() {
               directly by someone familiar with its details.
             </p>
           </div>
+          {/* Deliberately a static asset rather than a Sanity project cover:
+              the line in this building is one the firm no longer represents,
+              so the photograph should carry no project or manufacturer
+              attribution with it. */}
           <ImageSlot
-            src={imageUrl(historyProject?.coverImage, 900, 900)}
-            alt={historyProject ? historyProject.title.trim() : ''}
-            caption="drop photo - office, job site, or archive image"
+            src="/images/about/midamerica-energy-training.jpg"
+            alt="The MidAmerican Energy Company Training Center for Excellence in Des Moines, Iowa, its dark textured panel cladding wrapping a two-storey glazed corner"
             sizes="(max-width: 1024px) 100vw, 680px"
             large
             className="rv min-h-[280px] rounded-none lg:min-h-[440px]"
