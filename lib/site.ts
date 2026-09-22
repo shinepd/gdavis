@@ -131,7 +131,7 @@ export const CATEGORY_META: Record<string, CategoryMeta> = {
     blurb:
       'Channel and cast glass that admits daylight while managing privacy, reading as a continuous translucent plane.',
     tags: ['Interior', 'Exterior', 'Wall'],
-    groups: ['glass', 'facades'],
+    groups: ['glass'],
   },
   'architectural-wire-mesh': {
     title: 'Architectural Wire Mesh',
@@ -145,7 +145,7 @@ export const CATEGORY_META: Record<string, CategoryMeta> = {
     blurb:
       'The appearance of quarried stone at substantially reduced weight, with thin panels that ease structural and attachment requirements.',
     tags: ['Interior', 'Exterior', 'Wall'],
-    groups: ['facades', 'interiors'],
+    groups: ['facades'],
   },
   'metal-ceilings': {
     title: 'Metal Ceilings',
@@ -303,11 +303,12 @@ export const HOME_CATEGORIES: HomeCategory[] = [
   {
     title: 'Rainscreens & Cladding',
     blurb:
-      'Metal, wood, terracotta, and stone facade systems built on drained and ventilated cavity design.',
+      'Metal, wood, terracotta, and composite stone facade systems built on drained and ventilated cavity design.',
     categorySlugs: [
       'metal-rainscreens-and-cladding',
       'terracotta-rainscreens-and-cladding',
       'wood-rainscreens',
+      'composite-stone',
     ],
     href: '/products?filter=facades',
   },
@@ -330,11 +331,11 @@ export const HOME_CATEGORIES: HomeCategory[] = [
     href: '/products',
   },
   {
-    title: 'Specialty Materials',
+    title: 'Polycarbonate Architectural Systems',
     blurb:
-      'Composite stone and engineered panels that deliver distinctive finishes with predictable maintenance.',
-    categorySlugs: ['composite-stone'],
-    href: '/products?filter=interiors',
+      'Translucent polycarbonate wall and roof systems that carry daylight deep into a space while insulating far better than glass.',
+    categorySlugs: ['polycarbonate-daylighting'],
+    href: '/products?filter=glass',
   },
 ];
 

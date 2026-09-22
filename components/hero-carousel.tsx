@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 /** How long each frame holds before the next one crossfades in. */
 const DWELL_MS = 5000;
 /** Crossfade duration. */
-const FADE_MS = 900;
+const FADE_MS = 450;
 /** Horizontal travel, in px, that counts as a swipe rather than a tap. */
 const SWIPE_PX = 44;
 
