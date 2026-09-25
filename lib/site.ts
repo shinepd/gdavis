@@ -10,12 +10,12 @@
 /**
  * Absolute origin for canonical URLs, the sitemap, and social card images.
  *
- * Set `NEXT_PUBLIC_SITE_URL` once the firm's own domain is live; everything
- * that needs an absolute URL reads it from here, so the cutover is one env
- * value rather than a search and replace.
+ * Defaults to the firm's live domain. `NEXT_PUBLIC_SITE_URL` overrides it
+ * where a different origin is needed; everything that needs an absolute URL
+ * reads it from here.
  */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gdavis.vercel.app'
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gdavisandassociates.com'
 ).replace(/\/$/, '');
 
 export const SITE = {
