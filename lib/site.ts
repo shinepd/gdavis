@@ -71,7 +71,7 @@ export const TEAM: TeamMember[] = [
     discipline: 'Rainscreens, cladding, terracotta, and metal systems',
     phone: '(913) 231-8071',
     phoneHref: 'tel:9132318071',
-    email: 'george@gdavisassociates.com',
+    email: 'george@gdavisandassociates.com',
     photo: '/images/team/george.png',
   },
   {
@@ -80,7 +80,7 @@ export const TEAM: TeamMember[] = [
     discipline: 'Ceilings, acoustics, wood, and glass systems',
     phone: '(913) 744-0191',
     phoneHref: 'tel:9137440191',
-    email: 'maddie@gdavisassociates.com',
+    email: 'maddie@gdavisandassociates.com',
     photo: '/images/team/maddie.png',
   },
 ];
